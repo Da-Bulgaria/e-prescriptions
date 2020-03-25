@@ -53,6 +53,7 @@
 		</pluginRepository>
 	</pluginRepositories>
 	<dependencies>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -62,6 +63,10 @@
 					<artifactId>spring-boot-starter-tomcat</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -75,9 +80,15 @@
 			<groupId>io.undertow</groupId>
 			<artifactId>undertow-servlet</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -117,36 +128,8 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-properties-migrator</artifactId>
-			<scope>runtime</scope>
-			<exclusions>
-				<exclusion>
-					<!-- contains org.json.JSONTokener which makes conflict with the one 
-						in org.everit.json.schema -->
-					<groupId>com.vaadin.external.google</groupId>
-					<artifactId>android-json</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
 			<groupId>com.github.ben-manes.caffeine</groupId>
 			<artifactId>caffeine</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcprov-jdk15on</artifactId>
-			<version>1.56</version>
-		</dependency>
-		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcpkix-jdk15on</artifactId>
-			<version>1.56</version>
 		</dependency>
 		<dependency>
             <groupId>com.hazelcast</groupId>
@@ -175,11 +158,6 @@
 			<groupId>com.github.fge</groupId>
 			<artifactId>throwing-lambdas</artifactId>
 			<version>0.5.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>28.2-jre</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
@@ -213,7 +191,7 @@
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
-			<version>2.6.1</version>
+			<version>2.9.2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -241,11 +219,6 @@
 			<version>3.0.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>jsr305</artifactId>
-			<version>3.0.2</version>
-		</dependency>
-		<dependency>
 			<groupId>io.pebbletemplates</groupId>
 			<artifactId>pebble</artifactId>
 			<version>3.0.9</version>
@@ -260,18 +233,15 @@
 			<artifactId>threeten-extra</artifactId>
 			<version>1.2</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.jolokia</groupId>
 			<artifactId>jolokia-core</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>com.warrenstrange</groupId>
 			<artifactId>googleauth</artifactId>
 			<version>1.2.0</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
 			<artifactId>jersey-container-servlet</artifactId>
@@ -281,6 +251,12 @@
 			<groupId>org.glassfish.jersey.inject</groupId>
 			<artifactId>jersey-hk2</artifactId>
 			<version>2.26</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>javassist</artifactId>
+					<groupId>org.javassist</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.retry</groupId>
@@ -318,14 +294,58 @@
 		<dependency>
 			<groupId>io.gatling.highcharts</groupId>
 			<artifactId>gatling-charts-highcharts</artifactId>
-			<version>3.0.0-RC3</version>
+			<version>3.3.1</version>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>scala-library</artifactId>
+					<groupId>org.scala-lang</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>scala-reflect</artifactId>
+					<groupId>org.scala-lang</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>scala-java8-compat_2.12</artifactId>
+					<groupId>org.scala-lang.modules</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>pebble</artifactId>
+					<groupId>io.pebbletemplates</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>HdrHistogram</artifactId>
+					<groupId>org.hdrhistogram</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>config</artifactId>
+					<groupId>com.typesafe</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>io.gatling</groupId>
 			<artifactId>gatling-compiler</artifactId>
-			<version>3.0.0-RC3</version>
+			<version>3.3.1</version>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>scala-library</artifactId>
+					<groupId>org.scala-lang</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>scala-compiler</artifactId>
+					<groupId>org.scala-lang</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>scala-reflect</artifactId>
+					<groupId>org.scala-lang</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>protobuf-java</artifactId>
+					<groupId>com.google.protobuf</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.vault</groupId>
@@ -380,7 +400,7 @@
 			<plugin>
 				<groupId>io.gatling</groupId>
 				<artifactId>gatling-maven-plugin</artifactId>
-				<version>3.0.0-SNAPSHOT</version>
+				<version>3.0.5</version>
 				<configuration>
 					<configFolder>${project.basedir}/performance-tests/config</configFolder>
 					<resultsFolder>${project.basedir}/target/gatling/results</resultsFolder>
@@ -461,27 +481,28 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>3.0.0</version>
-				<executions>
-					<execution>
-						<id>validate</id>
-						<phase>validate</phase>
-						<configuration>
-							<encoding>UTF-8</encoding>
-							<consoleOutput>true</consoleOutput>
-							<failsOnError>false</failsOnError>
-							<linkXRef>false</linkXRef>
-							<configLocation>${basedir}/code-quality/checkstyle.xml</configLocation>
-						</configuration>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+			<!-- FAILS ON MISSING CONFIG FILE -->
+<!--			<plugin> -->
+<!--				<groupId>org.apache.maven.plugins</groupId>-->
+<!--				<artifactId>maven-checkstyle-plugin</artifactId>-->
+<!--				<version>3.0.0</version>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<id>validate</id>-->
+<!--						<phase>validate</phase>-->
+<!--						<configuration>-->
+<!--							<encoding>UTF-8</encoding>-->
+<!--							<consoleOutput>true</consoleOutput>-->
+<!--							<failsOnError>false</failsOnError>-->
+<!--							<linkXRef>false</linkXRef>-->
+<!--							<configLocation>${basedir}/code-quality/checkstyle.xml</configLocation>-->
+<!--						</configuration>-->
+<!--						<goals>-->
+<!--							<goal>check</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--			</plugin>-->
 		</plugins>
 		<pluginManagement>
 			<plugins>
