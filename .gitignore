@@ -4,3 +4,4 @@
 .project
 .idea/
 logs/
+.DS_Store
