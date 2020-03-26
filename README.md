@@ -1,11 +1,11 @@
-###Environment Setup Requirements
+### Environment Setup Requirements
 
-#####Java
+##### Java
 
 Please use OpenJDK version 11.02 (build 11.0.2+9),
 which you can download from [here.](https://jdk.java.net/archive/)
 
-#####Maven
+##### Maven
 
 Please consider using latest Maven version 3.6.3
 
