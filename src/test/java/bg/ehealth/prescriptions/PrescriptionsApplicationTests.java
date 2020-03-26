@@ -1,13 +1,13 @@
-package java.bg.ehealth.prescriptions;
+package bg.ehealth.prescriptions;
 
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class PrescriptionsApplicationTests {
+public class PrescriptionsApplicationTests {
 
 	@Test
-	void contextLoads() {
+	public void contextLoads() {
 	}
 
 }

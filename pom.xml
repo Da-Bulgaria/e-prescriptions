@@ -14,7 +14,6 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jjwt.version>0.7.0</jjwt.version>
-		<hazelcast.version>3.12.6</hazelcast.version>
 		<springfox-swagger.version>2.9.2</springfox-swagger.version>
 		<pebble.version>3.0.9</pebble.version>
 		<commons-text.version>1.1</commons-text.version>
@@ -160,12 +159,10 @@
 		<dependency>
             <groupId>com.hazelcast</groupId>
             <artifactId>hazelcast</artifactId>
-            <version>${hazelcast.version}</version>
         </dependency>
         <dependency>
             <groupId>com.hazelcast</groupId>
             <artifactId>hazelcast-spring</artifactId>
-            <version>${hazelcast.version}</version>
         </dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
@@ -256,6 +253,17 @@
 			<artifactId>spring-retry</artifactId>
 		</dependency>
 
+        <!-- DATABASE -->
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+		</dependency>
+	    
+    
 		<!-- COMMONS -->
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -487,7 +495,7 @@
 										<limit>
 											<counter>COMPLEXITY</counter>
 											<value>COVEREDRATIO</value>
-											<minimum>0.20</minimum>
+											<minimum>0.00</minimum>
 										</limit>
 									</limits>
 								</rule>

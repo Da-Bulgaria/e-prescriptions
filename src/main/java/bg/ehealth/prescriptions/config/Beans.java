@@ -5,5 +5,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableConfigurationProperties(DummyProperties.class)
-public class DummyConfig {
+public class Beans {
+    
 }
