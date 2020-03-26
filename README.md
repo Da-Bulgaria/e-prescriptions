@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Da-Bulgaria/e-prescriptions.svg?branch=master)](https://travis-ci.org/Da-Bulgaria/e-prescriptions)
+
 ### Environment Setup Requirements
 
 ##### Java
