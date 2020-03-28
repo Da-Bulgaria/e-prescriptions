@@ -16,7 +16,7 @@ public class PharmacyServiceJob {
         this.service = service;
     }
 
-    @Scheduled(cron = "${pharmacy.registry.import.schedule:0 0 * * Sun}")
+    @Scheduled(cron = "${pharmacy.registry.import.schedule:0 0 0 * * SUN}")
     public void start() {
         LOGGER.info("Starting cron job: import pharmacy registry.");
         service.importPharmacies();
