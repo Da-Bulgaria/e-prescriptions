@@ -21,7 +21,6 @@ public class BdaGatewayProperties {
     private String registersUrl;
     @NotBlank
     private String registerPharmacies;
-
     @DurationUnit(ChronoUnit.SECONDS)
     private Duration connectionTimeout;
 
