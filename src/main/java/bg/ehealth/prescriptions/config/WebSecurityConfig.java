@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
 
+import bg.ehealth.prescriptions.services.UserService;
 import bg.ehealth.prescriptions.web.security.JWTAuthenticationFilter;
 import bg.ehealth.prescriptions.web.security.JWTLoginFilter;
 
@@ -33,6 +34,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthenticationProvider postgresAuthenticationProvider;
 
+    @Autowired
+    private UserService userService;
+    
     @Value("${secure.headers}")
     private boolean secureHeaders;
 
@@ -66,7 +70,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .formLogin().loginPage("/login")
             .and()
             // We filter the api/login requests
-            .addFilterBefore(new JWTLoginFilter(APP_USER_URL + "login", authenticationManager(), secureHeaders, jwtSecret),
+            .addFilterBefore(new JWTLoginFilter(APP_USER_URL + "login", 
+                    authenticationManager(), secureHeaders, jwtSecret, userService),
                     UsernamePasswordAuthenticationFilter.class)
             // And filter other app requests to check the presence of JWT in header
             .addFilterBefore(new JWTAuthenticationFilter(

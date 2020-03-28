@@ -1,29 +1,28 @@
 package bg.ehealth.prescriptions.web.security;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import bg.ehealth.prescriptions.persistence.model.User;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import java.io.IOException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.UUID;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import bg.ehealth.prescriptions.persistence.model.User;
+import bg.ehealth.prescriptions.persistence.model.enums.UserType;
+import bg.ehealth.prescriptions.services.UserService;
 
 /**
  * Filter that is executed for login to set JWT token as response cookie
@@ -36,13 +35,15 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
     private boolean secureCookies;
     private String jwtSecret;
+    private UserService userService;
 
-    @SuppressWarnings("checkstyle:parameternumber")
-    public JWTLoginFilter(String url, AuthenticationManager authManager, boolean useHttps, String jwtSecret) {
+    public JWTLoginFilter(String url, AuthenticationManager authManager, boolean useHttps, 
+            String jwtSecret, UserService userService) {
         super(new AntPathRequestMatcher(url));
         setAuthenticationManager(authManager);
         this.secureCookies = useHttps;
         this.jwtSecret = jwtSecret;
+        this.userService = userService;
     }
 
     @Override
@@ -58,8 +59,21 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
         }
 
         logger.debug("Attempting authentication for email={} or uin={}", creds.getEmail(), creds.getUin());
-        User user = null; // TODO fetch by either email or UIN userService.getUserDetailsByEmail(creds.getEmail());
-        if (user == null) {
+        
+        if (creds.getUserType() == null) {
+            throw new BadCredentialsException("User type is mandatory");
+        }
+        
+        User user = null;
+        
+        if (StringUtils.isNotBlank(creds.getUin())) {
+            user = userService.getUserByUin(creds.getUin());
+        } else if (StringUtils.isNotBlank(creds.getEmail())){
+            user = userService.getUserByEmail(creds.getEmail());
+        } else {
+            throw new BadCredentialsException("Either UIN or email should be specified");
+        }
+        if (user == null || user.getUserType() != creds.getUserType()) {
             throw new BadCredentialsException("Failed to authenticate");
         }
 
@@ -72,7 +86,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
                                             FilterChain chain, Authentication auth) throws IOException, ServletException {
 
         // The authentication provider returns a spring security User object with username=userID
-        User user = null; // TODO userService.getUserDetailsById(UUID.fromString(auth.getName()));
+        User user = userService.getUserByUin(auth.getName());
         TokenAuthenticationService.addAuthentication(req, res, user, secureCookies, jwtSecret);
     }
 
@@ -90,6 +104,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
         private String email;
         private String uin;
         private String password;
+        private UserType userType;
         private int verificationCode;
 
         public String getUin() {
@@ -122,6 +137,14 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
         public void setVerificationCode(int verificationCode) {
             this.verificationCode = verificationCode;
+        }
+
+        public UserType getUserType() {
+            return userType;
+        }
+
+        public void setUserType(UserType userType) {
+            this.userType = userType;
         }
     }
 }

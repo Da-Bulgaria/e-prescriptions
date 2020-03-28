@@ -4,7 +4,6 @@ import java.util.Collections;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import bg.ehealth.prescriptions.persistence.model.User;
 
@@ -29,7 +28,7 @@ public class LoginAuthenticationToken extends UsernamePasswordAuthenticationToke
         this.verificationCode = verificationCode;
     }
 
-    public UserDetails getUser() {
-        return (UserDetails) getPrincipal();
+    public User getUser() {
+        return (User) getPrincipal();
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 
+import bg.ehealth.prescriptions.persistence.UserRepository;
 import bg.ehealth.prescriptions.persistence.model.User;
 
 /**
@@ -21,8 +22,8 @@ import bg.ehealth.prescriptions.persistence.model.User;
 @Component
 public class PostgresAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
-//    @Resource(name = "dao")
-//    private Dao dao;
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private GoogleAuthenticator googleAuthenticator;
@@ -45,9 +46,10 @@ public class PostgresAuthenticationProvider extends AbstractUserDetailsAuthentic
         }
         LoginAuthenticationToken loginToken = (LoginAuthenticationToken) authentication;
 
-        User user = null ;//dao.get(loginToken.getUser().getId(), User.class)
-//                .orElseThrow(() -> new BadCredentialsException("Failed to find user for id="
-//                        + loginToken.getUser().getId()));
+        User user = userRepository.getOne(loginToken.getUser().getId());
+        if (user == null) {
+            new BadCredentialsException("Failed to find user for id=" + loginToken.getUser().getId());
+        }
 
         if (user.getTwoFactorAuthSecret() != null
                 && !googleAuthenticator.authorize(user.getTwoFactorAuthSecret(), loginToken.getVerificationCode())) {
