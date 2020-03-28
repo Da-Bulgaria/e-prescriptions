@@ -6,45 +6,54 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.boot.convert.DurationUnit;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
 @ConfigurationProperties("bda.gateway")
-@ConstructorBinding
-@Validated
+@Valid
 public class BdaGatewayProperties {
 
     @NotBlank
-    private final String host;
+    private String host;
     @NotBlank
-    private final String registersUrl;
+    private String registersUrl;
     @NotBlank
-    private final String registerPharmacies;
-    @DurationUnit(ChronoUnit.SECONDS)
-    private final Duration connectionTimeout;
+    private String registerPharmacies;
 
-    public BdaGatewayProperties(String host, String registersUrl, String registerPharmacies,
-                                @DefaultValue("60s") Duration connectionTimeout) {
-        this.host = host;
-        this.registersUrl = registersUrl;
-        this.registerPharmacies = registerPharmacies;
-        this.connectionTimeout = connectionTimeout;
-    }
+    @DurationUnit(ChronoUnit.SECONDS)
+    private Duration connectionTimeout;
 
     public String getHost() {
         return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
     }
 
     public String getRegistersUrl() {
         return registersUrl;
     }
 
+    public void setRegistersUrl(String registersUrl) {
+        this.registersUrl = registersUrl;
+    }
+
     public String getRegisterPharmacies() {
         return registerPharmacies;
     }
 
+    public void setRegisterPharmacies(String registerPharmacies) {
+        this.registerPharmacies = registerPharmacies;
+    }
+
     public Duration getConnectionTimeout() {
         return connectionTimeout;
+    }
+
+    public void setConnectionTimeout(Duration connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
     }
 }

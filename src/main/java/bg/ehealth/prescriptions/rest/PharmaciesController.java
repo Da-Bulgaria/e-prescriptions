@@ -18,8 +18,8 @@ public class PharmaciesController {
     }
 
     @GetMapping("/pharmacies")
-    public ResponseEntity<List<PharmacyView>> getAllPharmacies() {
-        return ResponseEntity.ok(service.allPharmacies());
+    public List<PharmacyView> аllPharmacies() {
+        return service.allPharmacies();
     }
 }
 
