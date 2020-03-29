@@ -68,13 +68,13 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
         User user;
         
         if (StringUtils.isNotBlank(creds.getUin())) {
-            user = userService.getUserByUin(creds.getUin());
+            user = userService.getUserByUin(creds.getUin(), creds.getUserType());
         } else if (StringUtils.isNotBlank(creds.getEmail())){
-            user = userService.getUserByEmail(creds.getEmail());
+            user = userService.getUserByEmail(creds.getEmail(), creds.getUserType());
         } else {
             throw new BadCredentialsException("Either UIN or email should be specified");
         }
-        if (user == null || user.getUserType() != creds.getUserType()) {
+        if (user == null) {
             throw new BadCredentialsException("Failed to authenticate");
         }
 
@@ -87,7 +87,8 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
                                             FilterChain chain, Authentication auth) {
 
         // The authentication provider returns a spring security User object with username=userID
-        User user = userService.getUserByUin(auth.getName());
+        User user = userService.getUserByUin(auth.getName(), 
+                UserType.valueOf(auth.getAuthorities().iterator().next().getAuthority()));
         TokenAuthenticationService.addAuthentication(req, res, user, secureCookies, jwtSecret);
     }
 

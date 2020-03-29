@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 
-import bg.ehealth.prescriptions.persistence.UserRepository;
+import bg.ehealth.prescriptions.persistence.PharmacistRepository;
 import bg.ehealth.prescriptions.persistence.model.User;
 
 /**
@@ -23,7 +23,7 @@ import bg.ehealth.prescriptions.persistence.model.User;
 public class PostgresAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
     @Autowired
-    private UserRepository userRepository;
+    private PharmacistRepository userRepository;
 
     @Autowired
     private GoogleAuthenticator googleAuthenticator;

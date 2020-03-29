@@ -1,6 +1,8 @@
 package bg.ehealth.prescriptions.web.security;
 
 import bg.ehealth.prescriptions.persistence.model.User;
+import bg.ehealth.prescriptions.persistence.model.enums.UserType;
+import bg.ehealth.prescriptions.services.UserService;
 import io.jsonwebtoken.*;
 import io.undertow.server.handlers.Cookie;
 import io.undertow.server.handlers.CookieImpl;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
 @Component
 public class TokenAuthenticationService {
 
+    private static final String USER_TYPE_CLAIM = "userType";
     private static final Logger logger = LoggerFactory.getLogger(TokenAuthenticationService.class);
     private static final String ACCESS_TOKEN_COOKIE_NAME = "access_token_trails";
     private static final Duration EXPIRATION_TIME = Duration.ofDays(5);
@@ -35,7 +38,7 @@ public class TokenAuthenticationService {
 
     public static void addAuthentication(HttpServletRequest req, HttpServletResponse res,
                                          User user, boolean secureCookies, String secret) {
-        String jwt = createJwtToken(user.getId(), secret,
+        String jwt = createJwtToken(user.getId(), user.getUserType(), secret,
                     getHashClaim(user.getEmail(), user.getTwoFactorAuthSecret() != null, user.getPassword()));
 
         setCookie(res, jwt, secureCookies);
@@ -64,9 +67,10 @@ public class TokenAuthenticationService {
         nativeResponse.getExchange().setResponseCookie(cookie);
     }
 
-    public static String createJwtToken(String userId, String secret, String hashClaim) {
+    public static String createJwtToken(String userId, UserType userType, String secret, String hashClaim) {
         return Jwts.builder()
                 .claim(HASH_CLAIM, hashClaim)
+                .claim(USER_TYPE_CLAIM, userType)
                 .setSubject(userId)
                 .setExpiration(Date.from(Instant.now().plusMillis(EXPIRATION_TIME.get(ChronoUnit.MILLIS))))
                 .signWith(SignatureAlgorithm.HS512, secret)
@@ -85,7 +89,7 @@ public class TokenAuthenticationService {
     }
 
     static LoginAuthenticationToken getAuthentication(HttpServletRequest request, HttpServletResponse response,
-                                                      String secret) {
+                                                      String secret, UserService userService) {
         String token = Arrays.stream(request.getCookies())
                 .filter(cookie -> cookie.getName().endsWith(ACCESS_TOKEN_COOKIE_NAME))
                 .findFirst()
@@ -104,7 +108,7 @@ public class TokenAuthenticationService {
 
         if (StringUtils.isNotBlank(token) && !request.getRequestURI().equalsIgnoreCase("/error")) {
             try {
-                return createLoginAuthenticationToken(request, response, secret, token);
+                return createLoginAuthenticationToken(request, response, secret, token, userService);
             } catch (JwtException ex) {
                 logger.warn("Failed to parse token: {} in request for url {}",
                         ex.getMessage(), request.getRequestURI());
@@ -119,7 +123,7 @@ public class TokenAuthenticationService {
 
     public static LoginAuthenticationToken createLoginAuthenticationToken(
             HttpServletRequest request, HttpServletResponse response,
-            String secret, String token) {
+            String secret, String token, UserService userService) {
 
         // parse the token
         Jws<Claims> jwt = Jwts.parser()
@@ -132,15 +136,14 @@ public class TokenAuthenticationService {
             logout(request, response);
         }
 
-        String userId = jwt
-                .getBody()
-                .getSubject();
-
-        if (userId == null) {
+        String userUin = jwt.getBody().getSubject();
+        UserType userType = jwt.getBody().get(USER_TYPE_CLAIM, UserType.class);
+        
+        if (userUin == null) {
             return null;
         }
 
-        User user = null; // TODO userService.getUncachedUserDetailsById(UUID.fromString(userId));
+        User user = userService.getUserByUin(userUin, userType);
 
         // we have to check if the fields email,password,2fa have changed and reject the token if so
         // this serves as an automatic revocation instead of password change, activating 2FA or email change

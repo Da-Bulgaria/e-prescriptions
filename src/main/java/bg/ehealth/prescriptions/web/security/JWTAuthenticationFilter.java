@@ -1,9 +1,7 @@
 package bg.ehealth.prescriptions.web.security;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.GenericFilterBean;
+import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -11,8 +9,13 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.filter.GenericFilterBean;
+
+import bg.ehealth.prescriptions.services.UserService;
 
 /**
  * Filter that handles JWT authentication.
@@ -26,10 +29,12 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 
     private String jwtSecret;
     private List<String> unauthenticatedUris;
-
-    public JWTAuthenticationFilter(List<String> unauthenticatedUris, String jwtSecret) {
+    private UserService userService;
+    
+    public JWTAuthenticationFilter(List<String> unauthenticatedUris, String jwtSecret, UserService userService) {
         this.jwtSecret = jwtSecret;
         this.unauthenticatedUris = unauthenticatedUris;
+        this.userService = userService;
     }
 
     @Override
@@ -48,7 +53,8 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 
         final HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         LoginAuthenticationToken authentication =
-                TokenAuthenticationService.getAuthentication(httpServletRequest, httpServletResponse, jwtSecret);
+                TokenAuthenticationService.getAuthentication(httpServletRequest, httpServletResponse, 
+                        jwtSecret, userService);
         if (authentication != null) {
             if (authentication.getUser() == null) {
                 // user does not exist, so we just proceed with the filter without setting it in the security context;

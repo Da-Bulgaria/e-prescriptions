@@ -3,13 +3,13 @@ package bg.ehealth.prescriptions.persistence;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import bg.ehealth.prescriptions.persistence.model.User;
+import bg.ehealth.prescriptions.persistence.model.Pharmacist;
 
 /**
  * Repository for handling users, including authentication 
  */
 @Repository
-public interface UserRepository extends JpaRepository<User, String> {
+public interface PharmacistRepository extends JpaRepository<Pharmacist, String> {
 
-    User findByEmail(String email);
+    Pharmacist findByEmail(String email);
 }

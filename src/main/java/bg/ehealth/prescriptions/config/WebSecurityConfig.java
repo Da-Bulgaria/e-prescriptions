@@ -75,7 +75,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     UsernamePasswordAuthenticationFilter.class)
             // And filter other app requests to check the presence of JWT in header
             .addFilterBefore(new JWTAuthenticationFilter(
-                Arrays.asList(APP_USER_URL, SWAGGER_RESOURCES_URL, "/error"), jwtSecret), UsernamePasswordAuthenticationFilter.class)
+                Arrays.asList(APP_USER_URL, SWAGGER_RESOURCES_URL, "/error"), jwtSecret, userService), 
+                    UsernamePasswordAuthenticationFilter.class)
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // TODO consider stateless?
             .and().headers().contentSecurityPolicy((secureHeaders ? "upgrade-insecure-requests; " : "")
                 + "script-src 'self' 'unsafe-inline' https://www.google-analytics.com/" + "; report-uri " + reportUriCsp)
