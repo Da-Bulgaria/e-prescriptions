@@ -35,7 +35,9 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
-        String requestedUri = ((HttpServletRequest) request).getRequestURI();
+
+        final HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        String requestedUri = httpServletRequest.getRequestURI();
 
         for (String ignored : unauthenticatedUris) {
             if (requestedUri.toLowerCase().startsWith(ignored.toLowerCase())) {
@@ -44,8 +46,9 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
             }
         }
 
-        LoginAuthenticationToken authentication = TokenAuthenticationService.getAuthentication(
-                (HttpServletRequest) request, (HttpServletResponse) response, jwtSecret);
+        final HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+        LoginAuthenticationToken authentication =
+                TokenAuthenticationService.getAuthentication(httpServletRequest, httpServletResponse, jwtSecret);
         if (authentication != null) {
             if (authentication.getUser() == null) {
                 // user does not exist, so we just proceed with the filter without setting it in the security context;
@@ -53,17 +56,17 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
             } else {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-        } else if (WebUtils.isAjax((HttpServletRequest) request)) {
+        } else if (WebUtils.isAjax(httpServletRequest)) {
             // this is not actual security, just convenience for better user experience
-            ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "The token is not valid.");
+            httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "The token is not valid.");
             return;
         } else {
             // we need to clear the authentication which is cached in the session to prevent CSRF
             SecurityContextHolder.getContext().setAuthentication(null);
             // unauthenticated non-get and non-head requests should be blocked as they may be CSRF attempts
-            if (!((HttpServletRequest) request).getMethod().equals("GET")
-                    && !((HttpServletRequest) request).getMethod().equals("HEAD")) {
-                ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "The token is not valid.");
+            if (!"GET".equals(httpServletRequest.getMethod())
+                    && !"HEAD".equals((httpServletRequest).getMethod())) {
+                httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "The token is not valid.");
                 return;
             }
         }

@@ -31,7 +31,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(JWTLoginFilter.class);
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper;
 
     private boolean secureCookies;
     private String jwtSecret;
@@ -44,6 +44,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
         this.secureCookies = useHttps;
         this.jwtSecret = jwtSecret;
         this.userService = userService;
+        this.mapper = new ObjectMapper();
     }
 
     @Override
@@ -64,7 +65,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
             throw new BadCredentialsException("User type is mandatory");
         }
         
-        User user = null;
+        User user;
         
         if (StringUtils.isNotBlank(creds.getUin())) {
             user = userService.getUserByUin(creds.getUin());
@@ -83,7 +84,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
     @Override
     protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res,
-                                            FilterChain chain, Authentication auth) throws IOException, ServletException {
+                                            FilterChain chain, Authentication auth) {
 
         // The authentication provider returns a spring security User object with username=userID
         User user = userService.getUserByUin(auth.getName());
