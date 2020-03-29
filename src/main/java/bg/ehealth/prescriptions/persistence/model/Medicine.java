@@ -15,8 +15,9 @@ public class Medicine implements Identifiable<String> {
     
     @Column
     private String name;
-    
-    // TODO MKB, to automatically validate medicines against diagnosis 
+
+    @Column
+    private String icdCode;
     
     public String getId() {
         return atcCode;
