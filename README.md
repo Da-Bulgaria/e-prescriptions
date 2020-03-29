@@ -22,3 +22,14 @@ Please consider using latest Maven version 3.6.3
 ### Run Tests
 
 //TODO
+
+### Data imports
+
+#### Pharmacy Registry
+
+1) Check the db related settings in application.properties
+
+2) Run the PharmacyServiceImportStartIT, which will directly use the Repository 
+to insert into whatever datasource was configured.
+
+3) Or use the data.sql script located in src/main/resources
