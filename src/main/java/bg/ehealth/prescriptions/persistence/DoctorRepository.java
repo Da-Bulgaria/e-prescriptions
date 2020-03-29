@@ -1,15 +1,14 @@
 package bg.ehealth.prescriptions.persistence;
 
+import bg.ehealth.prescriptions.persistence.model.Doctor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import bg.ehealth.prescriptions.persistence.model.Pharmacist;
 
 /**
  * Repository for handling users, including authentication 
  */
 @Repository
-public interface DoctorRepository extends JpaRepository<Pharmacist, String> {
+public interface DoctorRepository extends JpaRepository<Doctor, String> {
 
-    Pharmacist findByEmail(String email);
+    Doctor findByEmail(String email);
 }
