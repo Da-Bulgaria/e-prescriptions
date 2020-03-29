@@ -1,0 +1,31 @@
+POST http://localhost:8080/login
+Content-Type: application/json
+
+###
+#Get a token
+POST http://localhost:8080/api/token
+Content-Type: application/json
+
+{
+  "email": "test@mailinator.com",
+  "uni": "uin",
+  "password": "123456",
+  "userType": "DOCTOR",
+  "verificationCode" : 666
+}
+
+###
+#Attempt login
+POST http://localhost:8080/login
+Content-Type: application/json
+Authorization: Bearer ""
+
+{
+  "email": "test@mailinator.com",
+  "uni": "uin",
+  "password": "123456",
+  "userType": "DOCTOR",
+  "verificationCode" : 666
+}
+###
+
