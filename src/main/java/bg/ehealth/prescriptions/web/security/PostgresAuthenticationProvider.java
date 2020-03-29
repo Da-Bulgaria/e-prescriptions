@@ -47,10 +47,6 @@ public class PostgresAuthenticationProvider extends AbstractUserDetailsAuthentic
         LoginAuthenticationToken loginToken = (LoginAuthenticationToken) authentication;
 
         User user = userRepository.getOne(loginToken.getUser().getId());
-        if (user == null) {
-            new BadCredentialsException("Failed to find user for id=" + loginToken.getUser().getId());
-        }
-
         if (user.getTwoFactorAuthSecret() != null
                 && !googleAuthenticator.authorize(user.getTwoFactorAuthSecret(), loginToken.getVerificationCode())) {
             throw new BadCredentialsException("Missing two-factor authentication verification code");

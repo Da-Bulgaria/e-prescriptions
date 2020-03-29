@@ -1,66 +1,37 @@
 package bg.ehealth.prescriptions.web.security;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
-
+import bg.ehealth.prescriptions.persistence.model.User;
+import io.jsonwebtoken.*;
+import io.undertow.server.handlers.Cookie;
+import io.undertow.server.handlers.CookieImpl;
+import io.undertow.servlet.spec.HttpServletResponseImpl;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import bg.ehealth.prescriptions.persistence.model.User;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.undertow.server.handlers.Cookie;
-import io.undertow.server.handlers.CookieImpl;
-import io.undertow.servlet.spec.HttpServletResponseImpl;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Service that handles authentication using JSON web tokens (used by the back-office application)
  */
 @Component
 public class TokenAuthenticationService {
+
     private static final Logger logger = LoggerFactory.getLogger(TokenAuthenticationService.class);
-
     private static final String ACCESS_TOKEN_COOKIE_NAME = "access_token_trails";
-    private static final long EXPIRATION_TIME = 432_000_000; // 5 days
+    private static final Duration EXPIRATION_TIME = Duration.ofDays(5);
     private static final String TOKEN_PREFIX = "Bearer";
-    private static final int MILLIS_PER_SECOND = 1000;
     public static final String HASH_CLAIM = "hash";
-
-
-    /**
-     * Adds a JWT authentication to the session
-     *
-     * @param res
-     * @param user
-     * @param secureCookies
-     * @param secret
-     */
-
-
-    /**
-     * Adds a JWT authentication to the session
-     *
-     * @param res
-     * @param user
-     * @param secureCookies
-     * @param secret
-     */
-
 
     public static void addAuthentication(HttpServletRequest req, HttpServletResponse res,
                                          User user, boolean secureCookies, String secret) {
@@ -94,38 +65,32 @@ public class TokenAuthenticationService {
     }
 
     public static String createJwtToken(String userId, String secret, String hashClaim) {
-        String jwt = Jwts.builder()
+        return Jwts.builder()
                 .claim(HASH_CLAIM, hashClaim)
                 .setSubject(userId)
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .setExpiration(Date.from(Instant.now().plusMillis(EXPIRATION_TIME.get(ChronoUnit.MILLIS))))
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
-
-        return jwt;
     }
 
     private static Cookie createCookie(String jwt, boolean secureCookies) {
         Cookie cookie = new CookieImpl(ACCESS_TOKEN_COOKIE_NAME, jwt);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
-        cookie.setMaxAge((int) (EXPIRATION_TIME / MILLIS_PER_SECOND));
+        cookie.setMaxAge((int) EXPIRATION_TIME.getSeconds());
         cookie.setSecure(secureCookies); //ability to disable secure cookies for dev purposes
         cookie.setSameSite(true);
         cookie.setSameSiteMode("Lax");
         return cookie;
     }
 
-    static LoginAuthenticationToken getAuthentication(HttpServletRequest request,
-                HttpServletResponse response, String secret) {
-        String token = null;
-        if (request.getCookies() != null) {
-            Optional<javax.servlet.http.Cookie> cookie = Arrays.stream(request.getCookies())
-                    .filter(c -> c.getName().endsWith(ACCESS_TOKEN_COOKIE_NAME))
-                    .findFirst();
-            if (cookie.isPresent()) {
-                token = cookie.get().getValue();
-            }
-        }
+    static LoginAuthenticationToken getAuthentication(HttpServletRequest request, HttpServletResponse response,
+                                                      String secret) {
+        String token = Arrays.stream(request.getCookies())
+                .filter(cookie -> cookie.getName().endsWith(ACCESS_TOKEN_COOKIE_NAME))
+                .findFirst()
+                .map(javax.servlet.http.Cookie::getValue)
+                .orElse(null);
 
         // if it's not found in a cookie, look in the Authorization header instead 
         if (StringUtils.isBlank(token)) {
