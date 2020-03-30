@@ -4,6 +4,7 @@ import bg.ehealth.prescriptions.persistence.model.User;
 import bg.ehealth.prescriptions.persistence.model.enums.UserType;
 import bg.ehealth.prescriptions.services.UserService;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import io.undertow.server.handlers.Cookie;
 import io.undertow.server.handlers.CookieImpl;
 import io.undertow.servlet.spec.HttpServletResponseImpl;
@@ -73,7 +74,7 @@ public class TokenAuthenticationService {
                 .claim(USER_TYPE_CLAIM, userType)
                 .setSubject(userId)
                 .setExpiration(Date.from(Instant.now().plusMillis(EXPIRATION_TIME.get(ChronoUnit.MILLIS))))
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .signWith(Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret)), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -126,8 +127,9 @@ public class TokenAuthenticationService {
             String secret, String token, UserService userService) {
 
         // parse the token
-        Jws<Claims> jwt = Jwts.parser()
-                .setSigningKey(secret)
+        Jws<Claims> jwt = Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret)))
+                .build()
                 .parseClaimsJws(token);
 
         // verify algorithm
