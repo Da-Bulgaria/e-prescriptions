@@ -90,11 +90,15 @@ public class TokenAuthenticationService {
 
     static LoginAuthenticationToken getAuthentication(HttpServletRequest request, HttpServletResponse response,
                                                       String secret, UserService userService) {
-        String token = Arrays.stream(request.getCookies())
-                .filter(cookie -> cookie.getName().endsWith(ACCESS_TOKEN_COOKIE_NAME))
-                .findFirst()
-                .map(javax.servlet.http.Cookie::getValue)
-                .orElse(null);
+        String token = null;
+
+        if (request.getCookies() != null) {
+            token = Arrays.stream(request.getCookies())
+                    .filter(cookie -> cookie.getName().endsWith(ACCESS_TOKEN_COOKIE_NAME))
+                    .findFirst()
+                    .map(javax.servlet.http.Cookie::getValue)
+                    .orElse(null);
+        }
 
         // if it's not found in a cookie, look in the Authorization header instead 
         if (StringUtils.isBlank(token)) {
