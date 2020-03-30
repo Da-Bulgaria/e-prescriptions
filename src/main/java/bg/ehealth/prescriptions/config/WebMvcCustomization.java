@@ -78,7 +78,7 @@ public class WebMvcCustomization implements WebMvcConfigurer {
 
         PebbleViewResolver viewResolver = new PebbleViewResolver();
         viewResolver.setRedirectHttp10Compatible(false);
-        viewResolver.setPrefix("static/");
+        viewResolver.setPrefix("templates/");
         viewResolver.setSuffix(".html");
         viewResolver.setCharacterEncoding("UTF-8");
         viewResolver.setPebbleEngine(pebbleEngine());
@@ -120,22 +120,30 @@ public class WebMvcCustomization implements WebMvcConfigurer {
         mappings.put("**/apple-touch-icon-76x76.png", appleFaviconRequestHandler());
         mappings.put("**/apple-touch-icon-120x120.png", appleFaviconRequestHandler());
         mappings.put("/favicon.ico", customFaviconRequestHandler());
+        mappings.put("/assets/**", customAssetsRequestHandler());
 
         mapping.setUrlMap(mappings);
         return mapping;
     }
 
     @Bean
+    public ResourceHttpRequestHandler customAssetsRequestHandler() {
+        ResourceHttpRequestHandler requestHandler = new ResourceHttpRequestHandler();
+        requestHandler.setLocations(Collections.singletonList(new ClassPathResource("assets/")));
+        return requestHandler;
+    }
+
+    @Bean
     public ResourceHttpRequestHandler appleFaviconRequestHandler() {
         ResourceHttpRequestHandler requestHandler = new ResourceHttpRequestHandler();
-        requestHandler.setLocations(Collections.singletonList(new ClassPathResource("static/images/favicon.png")));
+        requestHandler.setLocations(Collections.singletonList(new ClassPathResource("assets/images/favicon.png")));
         return requestHandler;
     }
 
     @Bean
     public ResourceHttpRequestHandler customFaviconRequestHandler() {
         ResourceHttpRequestHandler requestHandler = new ResourceHttpRequestHandler();
-        requestHandler.setLocations(Collections.singletonList(new ClassPathResource("static/favicon.ico")));
+        requestHandler.setLocations(Collections.singletonList(new ClassPathResource("assets/favicon.ico")));
         return requestHandler;
     }
 
@@ -155,8 +163,9 @@ public class WebMvcCustomization implements WebMvcConfigurer {
             return input.replace("\\", "\\u005C").replace("\t", "\\u0009")
                     .replace("\n", "\\u000A").replace("\f", "\\u000C")
                     .replace("\r", "\\u000D").replace("\"", "\\u0022")
-                    .replace("%", "\\u0025").replace("&", "\\u0026").replace("'", "\\u0027")
-                    .replace("/", "\\u002F").replace("<", "\\u003C").replace(">", "\\u003E");
+                    .replace("%", "\\u0025").replace("&", "\\u0026")
+                    .replace("'", "\\u0027").replace("/", "\\u002F")
+                    .replace("<", "\\u003C").replace(">", "\\u003E");
         }
     }
 
