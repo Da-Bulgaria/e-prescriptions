@@ -33,11 +33,13 @@ public class PharmacyService {
     }
 
     public void importPharmacies() {
-        List<Pharmacy> pharmacies = registry.pharmacies(bdaGateway.pharmacyRegistry(), PharmacyRegistryExcelColumn.valuesAsString()).stream()
+        List<Pharmacy> pharmacies = registry.pharmacies(bdaGateway.pharmacyRegistry(),
+                PharmacyRegistryExcelColumn.valuesAsString())
+                .stream()
                 .filter(p -> !p.isEmpty())
                 .map(p -> new Pharmacy(p.identifier(), p.name(), p.city(), p.address()))
                 .collect(Collectors.toList());
-        LOGGER.debug("Persisting pharmacies...");
+        LOGGER.debug("Persisting {} pharmacies...", pharmacies.size());
         repository.saveAll(pharmacies);
         LOGGER.debug("done.");
     }

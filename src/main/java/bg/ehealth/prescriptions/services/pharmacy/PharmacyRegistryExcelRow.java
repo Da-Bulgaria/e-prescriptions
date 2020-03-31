@@ -18,7 +18,10 @@ public class PharmacyRegistryExcelRow {
     @NotBlank
     private final String address;
 
-    public PharmacyRegistryExcelRow(String identifier, String name, String city, String address) {
+    public PharmacyRegistryExcelRow(@NotBlank String identifier,
+                                    @Nullable String name,
+                                    @NotBlank String city,
+                                    @NotBlank String address) {
         this.identifier = identifier.trim();
         this.name = name.trim();
         this.city = city.trim();
