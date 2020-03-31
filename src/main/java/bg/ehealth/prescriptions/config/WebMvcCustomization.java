@@ -2,6 +2,7 @@ package bg.ehealth.prescriptions.config;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
@@ -21,9 +22,13 @@ import org.springframework.core.Ordered;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
@@ -53,6 +58,25 @@ public class WebMvcCustomization implements WebMvcConfigurer {
 
     @Value("${environment}")
     private String environment;
+
+    @Bean
+    public LocaleResolver localeResolver() {
+        SessionLocaleResolver localeResolver = new SessionLocaleResolver();
+        localeResolver.setDefaultLocale(new Locale("bg", "BG"));
+        return localeResolver;
+    }
+
+    @Bean
+    public LocaleChangeInterceptor localeChangeInterceptor() {
+        LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
+        localeChangeInterceptor.setParamName("lang");
+        return localeChangeInterceptor;
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(localeChangeInterceptor());
+    }
 
     @Bean
     public SpringExtension pebbleSpringExtension() {
