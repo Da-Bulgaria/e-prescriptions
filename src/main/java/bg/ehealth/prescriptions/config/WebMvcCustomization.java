@@ -2,6 +2,7 @@ package bg.ehealth.prescriptions.config;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
@@ -21,9 +22,13 @@ import org.springframework.core.Ordered;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
@@ -55,6 +60,25 @@ public class WebMvcCustomization implements WebMvcConfigurer {
     private String environment;
 
     @Bean
+    public LocaleResolver localeResolver() {
+        SessionLocaleResolver localeResolver = new SessionLocaleResolver();
+        localeResolver.setDefaultLocale(new Locale("bg", "BG"));
+        return localeResolver;
+    }
+
+    @Bean
+    public LocaleChangeInterceptor localeChangeInterceptor() {
+        LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
+        localeChangeInterceptor.setParamName("lang");
+        return localeChangeInterceptor;
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(localeChangeInterceptor());
+    }
+
+    @Bean
     public SpringExtension pebbleSpringExtension() {
         return new SpringExtension();
     }
@@ -78,7 +102,7 @@ public class WebMvcCustomization implements WebMvcConfigurer {
 
         PebbleViewResolver viewResolver = new PebbleViewResolver();
         viewResolver.setRedirectHttp10Compatible(false);
-        viewResolver.setPrefix("static/");
+        viewResolver.setPrefix("templates/");
         viewResolver.setSuffix(".html");
         viewResolver.setCharacterEncoding("UTF-8");
         viewResolver.setPebbleEngine(pebbleEngine());
@@ -120,22 +144,30 @@ public class WebMvcCustomization implements WebMvcConfigurer {
         mappings.put("**/apple-touch-icon-76x76.png", appleFaviconRequestHandler());
         mappings.put("**/apple-touch-icon-120x120.png", appleFaviconRequestHandler());
         mappings.put("/favicon.ico", customFaviconRequestHandler());
+        mappings.put("/assets/**", customAssetsRequestHandler());
 
         mapping.setUrlMap(mappings);
         return mapping;
     }
 
     @Bean
+    public ResourceHttpRequestHandler customAssetsRequestHandler() {
+        ResourceHttpRequestHandler requestHandler = new ResourceHttpRequestHandler();
+        requestHandler.setLocations(Collections.singletonList(new ClassPathResource("assets/")));
+        return requestHandler;
+    }
+
+    @Bean
     public ResourceHttpRequestHandler appleFaviconRequestHandler() {
         ResourceHttpRequestHandler requestHandler = new ResourceHttpRequestHandler();
-        requestHandler.setLocations(Collections.singletonList(new ClassPathResource("static/images/favicon.png")));
+        requestHandler.setLocations(Collections.singletonList(new ClassPathResource("assets/images/favicon.png")));
         return requestHandler;
     }
 
     @Bean
     public ResourceHttpRequestHandler customFaviconRequestHandler() {
         ResourceHttpRequestHandler requestHandler = new ResourceHttpRequestHandler();
-        requestHandler.setLocations(Collections.singletonList(new ClassPathResource("static/favicon.ico")));
+        requestHandler.setLocations(Collections.singletonList(new ClassPathResource("assets/favicon.ico")));
         return requestHandler;
     }
 
@@ -155,8 +187,9 @@ public class WebMvcCustomization implements WebMvcConfigurer {
             return input.replace("\\", "\\u005C").replace("\t", "\\u0009")
                     .replace("\n", "\\u000A").replace("\f", "\\u000C")
                     .replace("\r", "\\u000D").replace("\"", "\\u0022")
-                    .replace("%", "\\u0025").replace("&", "\\u0026").replace("'", "\\u0027")
-                    .replace("/", "\\u002F").replace("<", "\\u003C").replace(">", "\\u003E");
+                    .replace("%", "\\u0025").replace("&", "\\u0026")
+                    .replace("'", "\\u0027").replace("/", "\\u002F")
+                    .replace("<", "\\u003C").replace(">", "\\u003E");
         }
     }
 
