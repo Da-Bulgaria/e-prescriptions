@@ -2,6 +2,11 @@
 .classpath
 .settings/
 .project
-.idea/
 logs/
 .DS_Store
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr

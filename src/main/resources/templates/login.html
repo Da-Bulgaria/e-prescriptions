@@ -1,0 +1,41 @@
+{% extends "main-layout" %}
+
+{% block title %}{{ i18n("labels", "login") | capitalize }}{% endblock %}
+
+{% block content %}
+<form id="loginForm">
+    <p class="form-title">Welcome</p>
+
+    <div class="row">
+        <label for="userInput">E-mail or UIN:</label>
+        <input type="text" id="userInput" placeholder="" name="userInput" autocomplete="userInput">
+    </div>
+
+    <div class="row">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="" name="password" autocomplete="current-password">
+    </div>
+
+    <div class="row">
+        <label for="userType">User Type:</label>
+        <select id="userType" name="userType">
+            <option value="">Choose</option>
+            <option value="DOCTOR">Doctor</option>
+            <option value="PHARMACIST">Pharmacist</option>
+        </select>
+    </div>
+
+    <div class="row">
+        <label for="verificationCode">Verification Code:</label>
+        <input type="text" id="verificationCode" placeholder="" name="verificationCode"
+               autocomplete="verificationCode">
+    </div>
+
+    <a class="submit-button" id="login">Login</a>
+</form>
+{% endblock %}
+
+{% block scripts %}
+   <script type="text/javscript" src="/assets/js/login.js"></script>
+
+{% endblock %}
