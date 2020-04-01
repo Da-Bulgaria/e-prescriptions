@@ -1,0 +1,88 @@
+@import url('reset-css.css');
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700&display=swap');
+
+*, *:before, *:after {
+    box-sizing: inherit;
+    padding: 0;
+    margin: 0;
+}
+
+body, form, select, input, textarea, option, legend {
+    font: inherit;
+    box-sizing: inherit;
+}
+
+html {
+    box-sizing: border-box;
+    font: 16px/1.2 "Source Sans Pro", sans-serif;
+    background: rgb(236 240 240);
+}
+
+body {
+    max-width: 55rem;
+    margin: 2rem auto;
+}
+
+form {
+    max-width: 400px;
+    margin: 3rem auto;
+}
+
+p.form-title {
+    text-align: center;
+    letter-spacing: 0.08em;
+    font-size: 3em;
+    font-weight: 500;
+    border-bottom: 2px solid rgb(44 122 198);
+    margin-bottom: 1em;
+    padding-bottom: 0.3em;
+}
+
+div.row {
+    margin-top: 1em;
+}
+
+label {
+    font-size: 1.1em;
+    display: block;
+    margin-bottom: 0.5em;
+    color: #666;
+}
+
+.small-label {
+    color: #999999;
+    font-size: 0.8em;
+}
+
+.submit-button {
+    display: block;
+    width: 100%;
+    padding: 0.4em;
+    background: rgb(44 122 198);
+    color: #FFFFFF;
+    font-size: 1.5em;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 0.4rem;
+    margin-top: 1rem;
+    cursor: pointer;
+}
+
+form div {
+    text-align: left;
+    position: relative;
+}
+
+input, select {
+    width: 100%;
+    border-radius: 0.4rem;
+    border: solid 1px rgb(207 225 234);
+    color: #999999;
+    padding: 0.5em;
+    outline: none;
+}
+
+select {
+    height: 2.5rem;
+    background: #FFFFFF;
+}
