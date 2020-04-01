@@ -1,6 +1,11 @@
 @import url('reset-css.css');
 @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700&display=swap');
 
+:root {
+    --doctor-color: rgb(168 44 23);
+    --pharmacist-color: #336699;
+}
+
 *, *:before, *:after {
     box-sizing: inherit;
     padding: 0;
@@ -25,17 +30,39 @@ body {
 
 form {
     max-width: 400px;
-    margin: 3rem auto;
+    margin: 2rem auto 3rem auto;
 }
 
-p.form-title {
+.form-title, .form-title-pharmacist {
     text-align: center;
-    letter-spacing: 0.08em;
-    font-size: 3em;
+    font-size: 2.5em;
     font-weight: 500;
-    border-bottom: 2px solid rgb(44 122 198);
-    margin-bottom: 1em;
+    border-bottom: 2px solid var(--doctor-color);
+    margin-bottom: 0.8em;
     padding-bottom: 0.3em;
+}
+
+.form-title-pharmacist {
+    border-bottom: 2px solid var(--pharmacist-color);
+}
+
+
+.submit-button, .submit-button-pharmacist {
+    display: block;
+    width: 100%;
+    padding: 0.4em;
+    background: var(--doctor-color);
+    color: #FFFFFF;
+    font-size: 1.5em;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 0.4rem;
+    margin: 1rem auto 2rem auto;
+    cursor: pointer;
+}
+
+.submit-button-pharmacist{
+    background: var(--pharmacist-color);
 }
 
 div.row {
@@ -54,35 +81,20 @@ label {
     font-size: 0.8em;
 }
 
-.submit-button {
-    display: block;
-    width: 100%;
-    padding: 0.4em;
-    background: rgb(44 122 198);
-    color: #FFFFFF;
-    font-size: 1.5em;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 0.4rem;
-    margin-top: 1rem;
-    cursor: pointer;
-}
-
 form div {
     text-align: left;
     position: relative;
 }
 
-input, select {
+input, .input-doctor, .input-pharmacist{
     width: 100%;
     border-radius: 0.4rem;
-    border: solid 1px rgb(207 225 234);
+    border: solid 1px var(--doctor-color);
     color: #999999;
     padding: 0.5em;
     outline: none;
 }
 
-select {
-    height: 2.5rem;
-    background: #FFFFFF;
+input, .input-pharmacist{
+    border: solid 1px var(--pharmacist-color);
 }
