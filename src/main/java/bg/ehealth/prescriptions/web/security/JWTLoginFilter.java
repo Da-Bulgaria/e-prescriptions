@@ -80,11 +80,6 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
         }
 
 
-        //fixme -> за тест само да върне реален user, после го изтрий
-        user = userService.getDoctorByUin(creds.getUin());
-
-
-
 
         return getAuthenticationManager().authenticate(
                 new LoginAuthenticationToken(user, creds.getPassword(), creds.getVerificationCode()));

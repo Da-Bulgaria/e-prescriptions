@@ -28,12 +28,6 @@ import bg.ehealth.prescriptions.persistence.model.User;
 public class PostgresAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
     @Autowired
-    private PharmacistRepository pharmacistRepository;
-
-    @Autowired
-    private DoctorRepository doctorRepository;
-
-    @Autowired
     private UserService userService;
 
     @Autowired
@@ -57,18 +51,8 @@ public class PostgresAuthenticationProvider extends AbstractUserDetailsAuthentic
         }
         LoginAuthenticationToken loginToken = (LoginAuthenticationToken) authentication;
 
-        User user = null;
+        User user = userService.getUserByUin(loginToken.getUser().getUin(), loginToken.getUser().getUserType());
 
-        if (loginToken.getUser().getUserType() == UserType.DOCTOR) {
-            user = doctorRepository.getOne(loginToken.getUser().getId());
-        } else if (loginToken.getUser().getUserType() == UserType.PHARMACIST) {
-            user = pharmacistRepository.getOne(loginToken.getUser().getId());
-        }
-
-        //fixme ->  за тест само да върне реален user, после го изтрий
-        user = userService.getDoctorByUin(loginToken.getUser().getId());
-
-        //fixme -> това ако е закоментирано не проверява getTwoFactorAuthSecret и се чупи като генерира токен
         if (user.getTwoFactorAuthSecret() != null
                 && !googleAuthenticator.authorize(user.getTwoFactorAuthSecret(), loginToken.getVerificationCode())) {
             throw new BadCredentialsException("Missing two-factor authentication verification code");

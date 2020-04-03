@@ -1,6 +1,8 @@
 package bg.ehealth.prescriptions.persistence.model;
 
 import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
@@ -34,6 +36,7 @@ public abstract class User implements Identifiable<String> {
     private String twoFactorAuthSecret;
 
     @Column
+    @Enumerated(EnumType.STRING)
     private UserType userType;
     
     public String getId() {

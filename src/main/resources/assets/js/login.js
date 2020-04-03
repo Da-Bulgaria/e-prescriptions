@@ -3,18 +3,8 @@ let userInputDoctor = $(`#userInputDoctor`);
 let passwordDoctor = $(`#passwordDoctor`);
 
 let loginPharmacist = $("#loginPharmacist");
-let userInputPharmacist = $(`#userInputPharmacist`);
-let passwordPharmacist = $(`#passwordPharmacist`);
-
-
-// // hardcoded values for tests:
-
-// userInputDoctor.val("test@mailinator.com");
-userInputDoctor.val("uin");
-passwordDoctor.val("123456");
-// let userType = "DOCTOR";
-let twoFactorAuthSecret = "666";
-
+let userInputPharmacist = $("#userInputPharmacist");
+let passwordPharmacist = $("#passwordPharmacist");
 
 
 function bodyConstructor() {
@@ -23,25 +13,19 @@ function bodyConstructor() {
     let userType;
 
     if (userInputDoctor.val().trim().length > 0 && passwordDoctor.val().trim().length > 0) {
-        // userType = "DOCTOR";
-        userType = 0;
+        userType = "DOCTOR";
         userPassword = passwordDoctor.val();
+        userInput = userInputDoctor.val();
     } else if (userInputPharmacist.val().trim().length > 0 && passwordPharmacist.val().trim().length > 0) {
         userType = "PHARMACIST";
         userPassword = passwordPharmacist.val();
-    }
-
-    // if (userType === "DOCTOR") {
-    if (userType === 0) {
-        userInput = userInputDoctor.val();
-    } else if (userType === "PHARMACIST") {
         userInput = userInputPharmacist.val();
     }
 
     if (userInput.toString().includes("@")) {
-        return JSON.stringify({email: userInput, password: userPassword, userType: userType, verificationCode: twoFactorAuthSecret});
+        return JSON.stringify({email: userInput, password: userPassword, userType: userType});
     } else {
-        return JSON.stringify({uin: userInput, password: userPassword, userType: userType, verificationCode: twoFactorAuthSecret});
+        return JSON.stringify({uin: userInput, password: userPassword, userType: userType});
     }
 }
 
@@ -93,8 +77,6 @@ let inMemoryToken;
 
 async function login({jwt_token, jwt_token_expiry}, noRedirect) {
 
-    console.log('log in in');
-
     console.log(jwt_token.toString());
     console.log(jwt_token_expiry.toString());
 
@@ -103,8 +85,6 @@ async function login({jwt_token, jwt_token_expiry}, noRedirect) {
         expiry: jwt_token_expiry
     };
     if (!noRedirect) {
-
-        // Router.push('/'); // как закачаме токена в хедъра?
         window.location('/');
     }
 }
@@ -117,7 +97,6 @@ $('#logout').on("click", function () {
 function isLoggedIn() {
     const jwt_token = inMemoryToken;
     if (!jwt_token) {
-        // Router.push('/login')
         window.location('/login');
     }
     return jwt_token
