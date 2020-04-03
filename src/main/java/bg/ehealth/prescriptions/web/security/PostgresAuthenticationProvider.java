@@ -2,6 +2,10 @@ package bg.ehealth.prescriptions.web.security;
 
 import java.util.Collections;
 
+import bg.ehealth.prescriptions.persistence.DoctorRepository;
+import bg.ehealth.prescriptions.persistence.model.enums.UserType;
+import bg.ehealth.prescriptions.services.UserService;
+import org.apache.xmlbeans.impl.xb.xsdschema.Attribute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,7 +28,13 @@ import bg.ehealth.prescriptions.persistence.model.User;
 public class PostgresAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
     @Autowired
-    private PharmacistRepository userRepository;
+    private PharmacistRepository pharmacistRepository;
+
+    @Autowired
+    private DoctorRepository doctorRepository;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private GoogleAuthenticator googleAuthenticator;
@@ -47,7 +57,18 @@ public class PostgresAuthenticationProvider extends AbstractUserDetailsAuthentic
         }
         LoginAuthenticationToken loginToken = (LoginAuthenticationToken) authentication;
 
-        User user = userRepository.getOne(loginToken.getUser().getId());
+        User user = null;
+
+        if (loginToken.getUser().getUserType() == UserType.DOCTOR) {
+            user = doctorRepository.getOne(loginToken.getUser().getId());
+        } else if (loginToken.getUser().getUserType() == UserType.PHARMACIST) {
+            user = pharmacistRepository.getOne(loginToken.getUser().getId());
+        }
+
+        //fixme ->  за тест само да върне реален user, после го изтрий
+        user = userService.getDoctorByUin(loginToken.getUser().getId());
+
+        //fixme -> това ако е закоментирано не проверява getTwoFactorAuthSecret и се чупи като генерира токен
         if (user.getTwoFactorAuthSecret() != null
                 && !googleAuthenticator.authorize(user.getTwoFactorAuthSecret(), loginToken.getVerificationCode())) {
             throw new BadCredentialsException("Missing two-factor authentication verification code");

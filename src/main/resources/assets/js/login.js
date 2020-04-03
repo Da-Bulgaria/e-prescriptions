@@ -1,46 +1,53 @@
-$(() => {
-    let loginDoctor = $("#loginDoctor");
-    let userInputDoctor = $(`#userInputDoctor`);
-    let passwordDoctor = $(`#passwordDoctor`);
+let loginDoctor = $("#loginDoctor");
+let userInputDoctor = $(`#userInputDoctor`);
+let passwordDoctor = $(`#passwordDoctor`);
 
-    let loginPharmacist = $("#loginPharmacist");
-    let userInputPharmacist = $(`#userInputPharmacist`);
-    let passwordPharmacist = $(`#passwordPharmacist`);
+let loginPharmacist = $("#loginPharmacist");
+let userInputPharmacist = $(`#userInputPharmacist`);
+let passwordPharmacist = $(`#passwordPharmacist`);
 
 
-    // hardcoded values for tests:
+// // hardcoded values for tests:
 
-    // userInputDoctor = "test@mailinator.com";
-    // userInputDoctor = "uin";
-    // passwordDoctor = "123456";
+// userInputDoctor.val("test@mailinator.com");
+userInputDoctor.val("uin");
+passwordDoctor.val("123456");
+// let userType = "DOCTOR";
+let twoFactorAuthSecret = "666";
 
-    function bodyConstructor(){
-        let userInput = "";
-        let userPassword;
-        let userType;
 
-        if(userInputDoctor.val().trim().length > 0 && passwordDoctor.val().trim().length > 0) {
-            userType = "DOCTOR";
-            userPassword = passwordDoctor.val();
-        } else if (userInputPharmacist.val().trim().length > 0 && passwordPharmacist.val().trim().length > 0){
-            userType = "PHARMACIST";
-            userPassword = passwordPharmacist.val();
-        }
 
-        if (userType === "DOCTOR"){
-            userInput = userInputDoctor.val();
-        } else if(userType === "PHARMACIST"){
-            userInput = userInputPharmacist.val();
-        }
+function bodyConstructor() {
+    let userInput = "";
+    let userPassword;
+    let userType;
 
-        if(userInput.toString().includes("@")){
-            return JSON.stringify({ email: userInput, password: userPassword, userType: userType})
-        } else {
-            return JSON.stringify({ uin: userInput, password: userPassword, userType: userType})
-        }
+    if (userInputDoctor.val().trim().length > 0 && passwordDoctor.val().trim().length > 0) {
+        // userType = "DOCTOR";
+        userType = 0;
+        userPassword = passwordDoctor.val();
+    } else if (userInputPharmacist.val().trim().length > 0 && passwordPharmacist.val().trim().length > 0) {
+        userType = "PHARMACIST";
+        userPassword = passwordPharmacist.val();
     }
 
-    async function logUser(){
+    // if (userType === "DOCTOR") {
+    if (userType === 0) {
+        userInput = userInputDoctor.val();
+    } else if (userType === "PHARMACIST") {
+        userInput = userInputPharmacist.val();
+    }
+
+    if (userInput.toString().includes("@")) {
+        return JSON.stringify({email: userInput, password: userPassword, userType: userType, verificationCode: twoFactorAuthSecret});
+    } else {
+        return JSON.stringify({uin: userInput, password: userPassword, userType: userType, verificationCode: twoFactorAuthSecret});
+    }
+}
+
+async function logUser() {
+
+    try {
         const response = await fetch("/user/login", {
             method: 'POST',
             credentials: 'include',
@@ -51,33 +58,77 @@ $(() => {
             body: bodyConstructor()
         });
 
-        const {jwt_token} = await response.json();
-        await login({jwt_token});
+        if (response.status === 200) {
+            clearForm();
+
+            const {jwt_token, jwt_token_expiry} = await response.json();
+            // const { jwt_token } = await response.json();
+
+
+            console.log('try to call login function');
+            await login({jwt_token, jwt_token_expiry});
+
+        } else {
+            console.log('Login failed.');
+            let error = new Error(response.statusText);
+            error.response = response;
+            throw error;
+        }
+    } catch (error) {
+        // console.error(
+        //     'Logging error.',
+        //     error
+        // );
+
+        // const { response } = error;
+        // setUserData(
+        //     Object.assign({}, userData, {
+        //         error: response ? response.statusText : error.message
+        //     })
+        // )
     }
+}
 
-    let inMemoryToken;
+let inMemoryToken;
 
-    function login ({ jwt_token, jwt_token_expiry }, noRedirect) {
+async function login({jwt_token, jwt_token_expiry}, noRedirect) {
 
-        //todo
+    console.log('log in in');
 
-        // inMemoryToken = {
-        //     token: jwt_token,
-        //     expiry: jwt_token_expiry
-        // };
-        // if (!noRedirect) {
-        //     Router.push('/app')
-        // }
+    console.log(jwt_token.toString());
+    console.log(jwt_token_expiry.toString());
+
+    inMemoryToken = {
+        token: jwt_token,
+        expiry: jwt_token_expiry
+    };
+    if (!noRedirect) {
+
+        // Router.push('/'); // как закачаме токена в хедъра?
+        window.location('/');
     }
+}
 
-
-    loginDoctor.on("click", async function (ev) {
-        ev.preventDefault();
-        await logUser();
-    });
-
-    loginPharmacist.on("click", async function (ev) {
-        ev.preventDefault();
-        await logUser();
-    });
+$('#logout').on("click", function () {
+    inMemoryToken = null;
+    window.location('/logout');
 });
+
+function isLoggedIn() {
+    const jwt_token = inMemoryToken;
+    if (!jwt_token) {
+        // Router.push('/login')
+        window.location('/login');
+    }
+    return jwt_token
+}
+
+function clearForm() {
+    userInputDoctor.val('');
+    passwordDoctor.val('');
+    userInputPharmacist.val('');
+    passwordPharmacist.val('');
+}
+
+loginDoctor.on('click', logUser);
+loginPharmacist.on('click', logUser);
