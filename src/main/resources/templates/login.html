@@ -4,49 +4,60 @@
 
 {% block content %}
 
-<div class="container-form">
-    <form class="form-left">
-        <p class="form-title">{{ i18n("labels", "doctor-login") | capitalize }}</p>
 
+<div class="container">
+    <div class="col-sm-12">
         <div class="row">
-            <label for="userInputDoctor">{{ i18n("labels", "user-input") | capitalize }}</label>
-            <input class="input-doctor" type="text" id="userInputDoctor" placeholder="" name="userInputDoctor"
-                   autocomplete="userInput">
+
+            <div class="col-md-6 sep">
+                <form class="register-form">
+                    <p class="form-title">{{ i18n("labels", "doctor-login") | capitalize }}</p>
+
+                    <div class="row-form">
+                        <label for="userInputDoctor">{{ i18n("labels", "user-input") | capitalize }}</label>
+                        <input class="input-doctor" type="text" id="userInputDoctor" placeholder=""
+                               name="userInputDoctor"
+                               autocomplete="userInput">
+                    </div>
+
+                    <div class="row-form">
+                        <label for="passwordDoctor">{{ i18n("labels", "password") | capitalize }}</label>
+                        <input class="input-doctor" type="password" id="passwordDoctor" placeholder=""
+                               name="passwordDoctor"
+                               autocomplete="current-password">
+                    </div>
+
+                    <div class="row-form">
+                        <p class="submit-button" id="loginDoctor">{{ i18n("labels", "login") | capitalize }}</p>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-6">
+                <form class="register-form">
+                    <p class="form-title-pharmacist">{{ i18n("labels", "pharmacist-login") | capitalize }}</p>
+
+                    <div class="row-form">
+                        <label for="userInputPharmacist">{{ i18n("labels", "user-input") | capitalize }}</label>
+                        <input class="input-pharmacist" type="text" id="userInputPharmacist" placeholder=""
+                               name="userInputPharmacist" autocomplete="userInput">
+                    </div>
+
+                    <div class="row-form">
+                        <label for="passwordPharmacist">{{ i18n("labels", "password") | capitalize }}</label>
+                        <input class="input-pharmacist" type="password" id="passwordPharmacist" placeholder=""
+                               name="passwordPharmacist"
+                               autocomplete="current-password">
+                    </div>
+
+                    <div class="row-form">
+                        <p class="submit-button-pharmacist" id="loginPharmacist">{{ i18n("labels", "login") | capitalize }}</p>
+                    </div>
+                </form>
+            </div>
+
         </div>
-
-        <div class="row">
-            <label for="passwordDoctor">{{ i18n("labels", "password") | capitalize }}</label>
-            <input class="input-doctor" type="password" id="passwordDoctor" placeholder="" name="passwordDoctor"
-                   autocomplete="current-password">
-        </div>
-
-        <div class="row">
-            <p class="submit-button" id="loginDoctor">{{ i18n("labels", "login") | capitalize }}</p>
-        </div>
-    </form>
-
-    <div class="sep"></div>
-
-    <form class="form-right">
-        <p class="form-title-pharmacist">{{ i18n("labels", "pharmacist-login") | capitalize }}</p>
-
-        <div class="row">
-            <label for="userInputPharmacist">{{ i18n("labels", "user-input") | capitalize }}</label>
-            <input class="input-pharmacist" type="text" id="userInputPharmacist" placeholder=""
-                   name="userInputPharmacist" autocomplete="userInput">
-        </div>
-
-        <div class="row">
-            <label for="passwordPharmacist">{{ i18n("labels", "password") | capitalize }}</label>
-            <input class="input-pharmacist" type="password" id="passwordPharmacist" placeholder=""
-                   name="passwordPharmacist"
-                   autocomplete="current-password">
-        </div>
-
-        <div class="row">
-            <p class="submit-button-pharmacist" id="loginPharmacist">{{ i18n("labels", "login") | capitalize }}</p>
-        </div>
-    </form>
+    </div>
 </div>
 
 {% endblock %}
