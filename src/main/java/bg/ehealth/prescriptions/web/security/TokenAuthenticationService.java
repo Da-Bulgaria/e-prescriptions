@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletResponseWrapper;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,7 +31,7 @@ public class TokenAuthenticationService {
 
     private static final String USER_TYPE_CLAIM = "userType";
     private static final Logger logger = LoggerFactory.getLogger(TokenAuthenticationService.class);
-    private static final String ACCESS_TOKEN_COOKIE_NAME = "access_token_trails";
+    private static final String ACCESS_TOKEN_COOKIE_NAME = "access_token";
     private static final Duration EXPIRATION_TIME = Duration.ofDays(5);
     private static final String TOKEN_PREFIX = "Bearer";
     public static final String HASH_CLAIM = "hash";
@@ -73,8 +72,8 @@ public class TokenAuthenticationService {
                 .claim(HASH_CLAIM, hashClaim)
                 .claim(USER_TYPE_CLAIM, userType)
                 .setSubject(userId)
-                .setExpiration(Date.from(Instant.now().plusMillis(EXPIRATION_TIME.get(ChronoUnit.MILLIS))))
-                .signWith(Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret)), SignatureAlgorithm.HS256)
+                .setExpiration(Date.from(Instant.now().plusMillis(EXPIRATION_TIME.toMillis())))
+                .signWith(Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret)), SignatureAlgorithm.HS512)
                 .compact();
     }
 
@@ -143,7 +142,7 @@ public class TokenAuthenticationService {
         }
 
         String userUin = jwt.getBody().getSubject();
-        UserType userType = jwt.getBody().get(USER_TYPE_CLAIM, UserType.class);
+        UserType userType = UserType.valueOf(jwt.getBody().get(USER_TYPE_CLAIM, String.class));
         
         if (userUin == null) {
             return null;

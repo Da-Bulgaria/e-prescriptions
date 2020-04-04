@@ -1,0 +1,2 @@
+INSERT INTO public.doctor (uin, email, first_name, last_name, middle_name, password, user_type) VALUES ('uin', 'test@mailinator.com', 'Ivan', 'Petrov', 'Georgiev', '$2y$10$inGKXgfMHJD3NVZEFUuvbuMZfHGxUaZa8zam39tnePlsBQ22WE142', 'DOCTOR');
+INSERT INTO public.pharmacist (uin, email, first_name, last_name, middle_name, password, user_type) VALUES ('uin', 'test_pharmacist@mailinator.com', 'Angel', 'Stoyanov', 'Atanasov', '$2y$10$inGKXgfMHJD3NVZEFUuvbuMZfHGxUaZa8zam39tnePlsBQ22WE142', 'PHARMACIST');

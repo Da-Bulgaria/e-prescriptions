@@ -56,6 +56,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
         try {
             creds = mapper.readValue(req.getInputStream(), AccountCredentials.class);
         } catch (JsonProcessingException ex) {
+            logger.error("Failed to parse JSON", ex);
             throw new BadCredentialsException("Failed to authenticate due to incorrect JSON request");
         }
 
@@ -77,6 +78,8 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
         if (user == null) {
             throw new BadCredentialsException("Failed to authenticate");
         }
+
+
 
         return getAuthenticationManager().authenticate(
                 new LoginAuthenticationToken(user, creds.getPassword(), creds.getVerificationCode()));

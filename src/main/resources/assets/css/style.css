@@ -1,0 +1,100 @@
+@import url('reset-css.css');
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700&display=swap');
+
+:root {
+    --doctor-color: rgb(168 44 23);
+    --pharmacist-color: #336699;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+    padding: 0;
+    margin: 0;
+}
+
+body, form, select, input, textarea, option, legend {
+    font: inherit;
+    box-sizing: inherit;
+}
+
+html {
+    box-sizing: border-box;
+    font: 16px/1.2 "Source Sans Pro", sans-serif;
+    background: rgb(236 240 240);
+}
+
+body {
+    max-width: 55rem;
+    margin: 2rem auto;
+}
+
+form {
+    max-width: 400px;
+    margin: 2rem auto 3rem auto;
+}
+
+.form-title, .form-title-pharmacist {
+    text-align: center;
+    font-size: 2.5em;
+    font-weight: 500;
+    border-bottom: 2px solid var(--doctor-color);
+    margin-bottom: 0.8em;
+    padding-bottom: 0.3em;
+}
+
+.form-title-pharmacist {
+    border-bottom: 2px solid var(--pharmacist-color);
+}
+
+
+.submit-button, .submit-button-pharmacist {
+    display: block;
+    width: 100%;
+    padding: 0.4em;
+    background: var(--doctor-color);
+    color: #FFFFFF;
+    font-size: 1.5em;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 0.4rem;
+    margin: 1rem auto 2rem auto;
+    cursor: pointer;
+}
+
+.submit-button-pharmacist{
+    background: var(--pharmacist-color);
+}
+
+div.row {
+    margin-top: 1em;
+}
+
+label {
+    font-size: 1.1em;
+    display: block;
+    margin-bottom: 0.5em;
+    color: #666;
+}
+
+.small-label {
+    color: #999999;
+    font-size: 0.8em;
+}
+
+form div {
+    text-align: left;
+    position: relative;
+}
+
+input, .input-doctor, .input-pharmacist{
+    width: 100%;
+    border-radius: 0.4rem;
+    border: solid 1px var(--doctor-color);
+    color: #999999;
+    padding: 0.5em;
+    outline: none;
+}
+
+input, .input-pharmacist{
+    border: solid 1px var(--pharmacist-color);
+}
