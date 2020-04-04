@@ -35,7 +35,7 @@ form {
 
 .form-title, .form-title-pharmacist {
     text-align: center;
-    font-size: 2.5em;
+    font-size: 2em;
     font-weight: 500;
     border-bottom: 2px solid var(--doctor-color);
     margin-bottom: 0.8em;
@@ -65,20 +65,15 @@ form {
     background: var(--pharmacist-color);
 }
 
-div.row {
+div.row-form {
     margin-top: 1em;
 }
 
 label {
-    font-size: 1.1em;
+    font-size: 1em;
     display: block;
     margin-bottom: 0.5em;
     color: #666;
-}
-
-.small-label {
-    color: #999999;
-    font-size: 0.8em;
 }
 
 form div {
@@ -97,4 +92,15 @@ input, .input-doctor, .input-pharmacist{
 
 input, .input-pharmacist{
     border: solid 1px var(--pharmacist-color);
+}
+
+.register-form{
+    width: 80%;
+}
+
+@media only screen and (min-width: 768px) {
+
+    .col-md-6.sep {
+        border-right: #D2E0E6 1px solid;
+    }
 }
