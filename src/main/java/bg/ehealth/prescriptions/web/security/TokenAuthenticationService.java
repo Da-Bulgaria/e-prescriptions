@@ -73,7 +73,7 @@ public class TokenAuthenticationService {
                 .claim(USER_TYPE_CLAIM, userType)
                 .setSubject(userId)
                 .setExpiration(Date.from(Instant.now().plusMillis(EXPIRATION_TIME.toMillis())))
-                .signWith(Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret)), SignatureAlgorithm.HS256)
+                .signWith(Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret)), SignatureAlgorithm.HS512)
                 .compact();
     }
 
@@ -142,7 +142,7 @@ public class TokenAuthenticationService {
         }
 
         String userUin = jwt.getBody().getSubject();
-        UserType userType = jwt.getBody().get(USER_TYPE_CLAIM, UserType.class);
+        UserType userType = UserType.valueOf(jwt.getBody().get(USER_TYPE_CLAIM, String.class));
         
         if (userUin == null) {
             return null;

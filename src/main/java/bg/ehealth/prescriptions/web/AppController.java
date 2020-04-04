@@ -23,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.error.PebbleException;
 
+import bg.ehealth.prescriptions.persistence.model.enums.UserType;
 import bg.ehealth.prescriptions.web.security.LoginAuthenticationToken;
 
 @Controller
@@ -35,6 +36,16 @@ public class AppController {
     @Autowired
     private PebbleEngine templateEngine;
     
+    @RequestMapping(value = {"", "/", "/dashboard"}, method = RequestMethod.GET)
+    public ModelAndView index(@AuthenticationPrincipal LoginAuthenticationToken token) {
+        if (token.getUser().getUserType() == UserType.DOCTOR) {
+            return new ModelAndView("doctor-dashboard");
+        } else if (token.getUser().getUserType() == UserType.PHARMACIST) {
+            return new ModelAndView("pharmacist-dashboard");
+        }
+        throw new IllegalStateException("Unsupported user type " + token.getUser().getUserType());
+    }
+    
     @RequestMapping(value = "/{path}", method = RequestMethod.GET)
     public ModelAndView htmlMapping(@PathVariable String path,
                                     @AuthenticationPrincipal LoginAuthenticationToken token,
@@ -43,7 +54,7 @@ public class AppController {
         if (path.equals("login")) {
             return new ModelAndView("login");
         }
-
+        
         // we first verify whether such a template exists. Many agents send requests to non-existent URLs
         // which results in long stacktraces that are useless. So we validate the existence of a template before actually
         // trying to render it
