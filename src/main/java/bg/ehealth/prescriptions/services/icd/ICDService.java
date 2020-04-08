@@ -51,7 +51,6 @@ public class ICDService {
     public void initialize() throws IOException {
         // Index that is using stopwords and stems for better search functionality
         ByteBuffersDirectory directory = new ByteBuffersDirectory();
-        IndexWriter directoryWriter = new IndexWriter(directory, new IndexWriterConfig(new BulgarianAnalyzer()));
 
         // Second index is created for the autocomplete functionality.
         // The autocomplete analyzer needs to be simple so the suggestions are as they are in the text.
@@ -64,25 +63,27 @@ public class ICDService {
             }
         };
         ByteBuffersDirectory autocompleteDirectory = new ByteBuffersDirectory();
-        IndexWriter autocompleteDirectoryWriter = new IndexWriter(autocompleteDirectory,
-                new IndexWriterConfig(autocompleteAnalyzer));
 
-        // Reading the input data from the csv
-        InputStream icdStream = ICDService.class.getResourceAsStream("/icd10.csv");
-        Reader icdReader = new InputStreamReader(icdStream);
-        CSVParser icdParser = new CSVParser(icdReader, CSVFormat.RFC4180);
-        for (CSVRecord line : icdParser) {
-            Document doc = new Document();
-            doc.add(new StoredField(ID, line.get(0)));
-            doc.add(new TextField(DESCRIPTION, line.get(1), Field.Store.YES));
-            directoryWriter.addDocument(doc);
+        try (IndexWriter directoryWriter = new IndexWriter(directory, new IndexWriterConfig(new BulgarianAnalyzer()))) {
+            try (IndexWriter autocompleteDirectoryWriter = new IndexWriter(autocompleteDirectory,
+                    new IndexWriterConfig(autocompleteAnalyzer))) {
 
-            Document autocompleteDoc = new Document();
-            autocompleteDoc.add(new TextField(DESCRIPTION, line.get(1), Field.Store.YES));
-            autocompleteDirectoryWriter.addDocument(autocompleteDoc);
+                // Reading the input data from the csv
+                InputStream icdStream = ICDService.class.getResourceAsStream("/icd10.csv");
+                Reader icdReader = new InputStreamReader(icdStream);
+                CSVParser icdParser = new CSVParser(icdReader, CSVFormat.RFC4180);
+                for (CSVRecord line : icdParser) {
+                    Document doc = new Document();
+                    doc.add(new StoredField(ID, line.get(0)));
+                    doc.add(new TextField(DESCRIPTION, line.get(1), Field.Store.YES));
+                    directoryWriter.addDocument(doc);
+
+                    Document autocompleteDoc = new Document();
+                    autocompleteDoc.add(new TextField(DESCRIPTION, line.get(1), Field.Store.YES));
+                    autocompleteDirectoryWriter.addDocument(autocompleteDoc);
+                }
+            }
         }
-        directoryWriter.close();
-        autocompleteDirectoryWriter.close();
 
         // Using Lucene's suggester for the autocomplete functionality
         buildAnalyzingSuggester(autocompleteDirectory, autocompleteAnalyzer);
