@@ -64,24 +64,23 @@ public class ICDService {
         };
         ByteBuffersDirectory autocompleteDirectory = new ByteBuffersDirectory();
 
-        try (IndexWriter directoryWriter = new IndexWriter(directory, new IndexWriterConfig(new BulgarianAnalyzer()))) {
-            try (IndexWriter autocompleteDirectoryWriter = new IndexWriter(autocompleteDirectory,
-                    new IndexWriterConfig(autocompleteAnalyzer))) {
+        try (IndexWriter directoryWriter = new IndexWriter(directory, new IndexWriterConfig(new BulgarianAnalyzer()));
+             IndexWriter autocompleteDirectoryWriter = new IndexWriter(autocompleteDirectory,
+                     new IndexWriterConfig(autocompleteAnalyzer))) {
 
-                // Reading the input data from the csv
-                InputStream icdStream = ICDService.class.getResourceAsStream("/icd10.csv");
-                Reader icdReader = new InputStreamReader(icdStream);
-                CSVParser icdParser = new CSVParser(icdReader, CSVFormat.RFC4180);
-                for (CSVRecord line : icdParser) {
-                    Document doc = new Document();
-                    doc.add(new StoredField(ID, line.get(0)));
-                    doc.add(new TextField(DESCRIPTION, line.get(1), Field.Store.YES));
-                    directoryWriter.addDocument(doc);
+            // Reading the input data from the csv
+            InputStream icdStream = ICDService.class.getResourceAsStream("/icd10.csv");
+            Reader icdReader = new InputStreamReader(icdStream);
+            CSVParser icdParser = new CSVParser(icdReader, CSVFormat.RFC4180);
+            for (CSVRecord line : icdParser) {
+                Document doc = new Document();
+                doc.add(new StoredField(ID, line.get(0)));
+                doc.add(new TextField(DESCRIPTION, line.get(1), Field.Store.YES));
+                directoryWriter.addDocument(doc);
 
-                    Document autocompleteDoc = new Document();
-                    autocompleteDoc.add(new TextField(DESCRIPTION, line.get(1), Field.Store.YES));
-                    autocompleteDirectoryWriter.addDocument(autocompleteDoc);
-                }
+                Document autocompleteDoc = new Document();
+                autocompleteDoc.add(new TextField(DESCRIPTION, line.get(1), Field.Store.YES));
+                autocompleteDirectoryWriter.addDocument(autocompleteDoc);
             }
         }
 
