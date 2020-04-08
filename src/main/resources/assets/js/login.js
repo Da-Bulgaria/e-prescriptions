@@ -1,29 +1,50 @@
-$(document).ready(function() {
-	let loginDoctor = $("#loginDoctor");
-	let loginPharmacist = $("#loginPharmacist");
-	
-	loginDoctor.on('click', function() {
-		logUser("DOCTOR");
-	});
+$(document).ready(function () {
+    let loginDoctor = $("#loginDoctor");
+    let loginPharmacist = $("#loginPharmacist");
 
-	loginPharmacist.on('click', function() {
-		logUser("PHARMACIST");
-	});
+    loginDoctor.on('click', function () {
+        logUser("DOCTOR");
+    });
+
+    loginPharmacist.on('click', function () {
+        logUser("PHARMACIST");
+    });
+
+    // тези се дублират и в buildBody(), защото не знех дали е добре да ги правя глобални
+    let userInputDoctor = $("#userInputDoctor");
+    let userInputPharmacist = $("#userInputPharmacist");
+
+    $(document).keypress(function (event) {
+
+        if (event.keyCode === 13) {
+            event.preventDefault();
+
+            if(userInputDoctor.val().toString().length > 0 && userInputPharmacist.val().toString().length > 0){
+                alert("Грешно входни данни") // до това не стигаме, вероятно заради двата бутона и двете форми, или защото браузъра умнее
+            }
+
+            if (userInputDoctor.val().toString().length > 0) {
+                logUser("DOCTOR");
+            } else if (userInputPharmacist.val().toString().length > 0) {
+                logUser("PHARMACIST");
+            }
+        }
+    });
 });
 
 function buildBody(userType) {
     let userInput = "";
     let userPassword;
 
-    if (userType == "DOCTOR") {
-    	let userInputDoctor = $("#userInputDoctor");
-    	let passwordDoctor = $("#passwordDoctor");
+    if (userType === "DOCTOR") { // js иска 3 пъти "=" за да е equals
+        let userInputDoctor = $("#userInputDoctor");
+        let passwordDoctor = $("#passwordDoctor");
         userPassword = passwordDoctor.val();
         userInput = userInputDoctor.val();
-    } else if (userType == "PHARMACIST") {
-    	let userInputPharmacist = $("#userInputPharmacist");
-    	let passwordPharmacist = $("#passwordPharmacist");
-    	
+    } else if (userType === "PHARMACIST") {
+        let userInputPharmacist = $("#userInputPharmacist");
+        let passwordPharmacist = $("#passwordPharmacist");
+
         userPassword = passwordPharmacist.val();
         userInput = userInputPharmacist.val();
     }
@@ -46,7 +67,7 @@ async function logUser(userType) {
             body: buildBody(userType)
         });
 
-        if (response.status == 200) {
+        if (response.status === 200) {
             window.location = "/";
         } else {
             console.log('Login failed.');
@@ -55,7 +76,7 @@ async function logUser(userType) {
             throw error;
         }
     } catch (error) {
-         console.error('Login error.', error);
+        console.error('Login error.', error);
     }
 }
 
