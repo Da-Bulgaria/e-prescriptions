@@ -4,10 +4,13 @@
 
 {% block content %}
 
-
 <div class="container">
     <div class="col-sm-12">
         <div class="row">
+            <div id="errorBox" class="errorBox notification">
+                <p>{{ i18n("labels", "error-input-data") | capitalize }}</p>
+                <span class="closeErrorWindow">OK</span>
+            </div>
 
             <div class="col-md-6 sep">
                 <form class="register-form" id="loginFormDoctor">
@@ -27,15 +30,16 @@
                                autocomplete="current-password">
                     </div>
 
-<!--                    <div class="row-form">-->
-<!--                        <div class="checkbox-wrapper">-->
-<!--                            <input type="checkbox" id="remember-password-dr" name="remember-password" value="true">-->
-<!--                            <label for="remember-password-dr">{{ i18n("labels", "remember-password") | capitalize }}</label>-->
-<!--                        </div>-->
-<!--                    </div>-->
+                    <!--                    <div class="row-form">-->
+                    <!--                        <div class="checkbox-wrapper">-->
+                    <!--                            <input type="checkbox" id="remember-password-dr" name="remember-password" value="true">-->
+                    <!--                            <label for="remember-password-dr">{{ i18n("labels", "remember-password") | capitalize }}</label>-->
+                    <!--                        </div>-->
+                    <!--                    </div>-->
 
                     <div class="row-form">
-                        <button class="submit-button" id="loginDoctor">{{ i18n("labels", "login") | capitalize }}</button>
+                        <button class="submit-button" id="loginDoctor">{{ i18n("labels", "login") | capitalize }}
+                        </button>
                     </div>
                 </form>
             </div>
@@ -57,15 +61,16 @@
                                name="passwordPharmacist" autocomplete="current-password">
                     </div>
 
-<!--                    <div class="row-form">-->
-<!--                        <div class="checkbox-wrapper">-->
-<!--                            <input type="checkbox" id="remember-password-ph" name="remember-password" value="true">-->
-<!--                            <label for="remember-password-ph">{{ i18n("labels", "remember-password") | capitalize }}</label>-->
-<!--                        </div>-->
-<!--                    </div>-->
+                    <!--                    <div class="row-form">-->
+                    <!--                        <div class="checkbox-wrapper">-->
+                    <!--                            <input type="checkbox" id="remember-password-ph" name="remember-password" value="true">-->
+                    <!--                            <label for="remember-password-ph">{{ i18n("labels", "remember-password") | capitalize }}</label>-->
+                    <!--                        </div>-->
+                    <!--                    </div>-->
 
                     <div class="row-form">
-                        <button class="submit-button-pharmacist" id="loginPharmacist">{{ i18n("labels", "login") | capitalize }}</button>
+                        <button class="submit-button-pharmacist" id="loginPharmacist">{{ i18n("labels", "login") | capitalize }}
+                        </button>
                     </div>
                 </form>
             </div>

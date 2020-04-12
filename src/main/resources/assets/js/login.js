@@ -1,32 +1,34 @@
+const userInputDoctor = $("#userInputDoctor");
+const userInputPharmacist = $("#userInputPharmacist");
+
 $(document).ready(function () {
     let loginDoctor = $("#loginDoctor");
     let loginPharmacist = $("#loginPharmacist");
 
-    loginDoctor.on('click', function () {
+    loginDoctor.on('click', function (e) {
+        e.preventDefault();
+        checkInputData();
         logUser("DOCTOR");
     });
 
-    loginPharmacist.on('click', function () {
+    loginPharmacist.on('click', function (e) {
+        e.preventDefault();
+        checkInputData();
         logUser("PHARMACIST");
     });
 
-    // тези се дублират и в buildBody(), защото не знех дали е добре да ги правя глобални
-    let userInputDoctor = $("#userInputDoctor");
-    let userInputPharmacist = $("#userInputPharmacist");
 
     $(document).keypress(function (event) {
 
         if (event.keyCode === 13) {
             event.preventDefault();
 
-            if(userInputDoctor.val().toString().length > 0 && userInputPharmacist.val().toString().length > 0){
-                alert("Грешно входни данни") // до това не стигаме, вероятно заради двата бутона и двете форми, или защото браузъра умнее
-            }
-
             if (userInputDoctor.val().toString().length > 0) {
                 logUser("DOCTOR");
             } else if (userInputPharmacist.val().toString().length > 0) {
                 logUser("PHARMACIST");
+            } else {
+                checkInputData();
             }
         }
     });
@@ -36,7 +38,7 @@ function buildBody(userType) {
     let userInput = "";
     let userPassword;
 
-    if (userType === "DOCTOR") { // js иска 3 пъти "=" за да е equals
+    if (userType === "DOCTOR") {
         let userInputDoctor = $("#userInputDoctor");
         let passwordDoctor = $("#passwordDoctor");
         userPassword = passwordDoctor.val();
@@ -80,3 +82,25 @@ async function logUser(userType) {
     }
 }
 
+function customErrorAlert() {
+    const close = document.getElementsByClassName("closeErrorWindow")[0];
+    const box = document.getElementById("errorBox");
+
+    box.style.display = "block";
+
+    close.onclick = function () {
+        box.style.display = "none";
+    };
+
+    window.onclick = function (event) {
+        if (event.target === box) {
+            box.style.display = "none";
+        }
+    };
+}
+
+function checkInputData() {
+    if (userInputDoctor.val().toString().length === 0 && userInputPharmacist.val().toString().length === 0) {
+        customErrorAlert();
+    }
+}
