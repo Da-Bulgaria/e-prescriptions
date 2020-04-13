@@ -2,21 +2,22 @@ const userInputDoctor = $("#userInputDoctor");
 const userInputPharmacist = $("#userInputPharmacist");
 
 $(document).ready(function () {
-    let loginDoctor = $("#loginDoctor");
-    let loginPharmacist = $("#loginPharmacist");
+    let loginDoctorButton = $("#loginDoctor");
+    let loginPharmacistButton = $("#loginPharmacist");
 
-    loginDoctor.on('click', function (e) {
+    loginDoctorButton.on('click', function (e) {
         e.preventDefault();
-        checkInputData();
-        logUser("DOCTOR");
+        if (checkInputData()) {
+            logUser("DOCTOR");
+        }
     });
 
-    loginPharmacist.on('click', function (e) {
+    loginPharmacistButton.on('click', function (e) {
         e.preventDefault();
-        checkInputData();
-        logUser("PHARMACIST");
+        if (checkInputData()) {
+            logUser("PHARMACIST");
+        }
     });
-
 
     $(document).keypress(function (event) {
 
@@ -39,12 +40,10 @@ function buildBody(userType) {
     let userPassword;
 
     if (userType === "DOCTOR") {
-        let userInputDoctor = $("#userInputDoctor");
         let passwordDoctor = $("#passwordDoctor");
         userPassword = passwordDoctor.val();
         userInput = userInputDoctor.val();
     } else if (userType === "PHARMACIST") {
-        let userInputPharmacist = $("#userInputPharmacist");
         let passwordPharmacist = $("#passwordPharmacist");
 
         userPassword = passwordPharmacist.val();
@@ -82,6 +81,15 @@ async function logUser(userType) {
     }
 }
 
+function checkInputData() {
+    if (userInputDoctor.val().toString().length === 0 && userInputPharmacist.val().toString().length === 0) {
+        customErrorAlert();
+        return false;
+    } else {
+        return true;
+    }
+}
+
 function customErrorAlert() {
     const close = document.getElementsByClassName("closeErrorWindow")[0];
     const box = document.getElementById("errorBox");
@@ -92,15 +100,18 @@ function customErrorAlert() {
         box.style.display = "none";
     };
 
+    $(document).keypress(function (event) {
+
+        if (event.keyCode === 13) {
+            event.preventDefault();
+
+            box.style.display = "none";
+        }
+    });
+
     window.onclick = function (event) {
         if (event.target === box) {
             box.style.display = "none";
         }
     };
-}
-
-function checkInputData() {
-    if (userInputDoctor.val().toString().length === 0 && userInputPharmacist.val().toString().length === 0) {
-        customErrorAlert();
-    }
 }
