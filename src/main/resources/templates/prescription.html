@@ -19,7 +19,7 @@
       <label for="prescription-type" class="col-sm-4 col-form-label">{{ i18n("labels", "prescription-type") | capitalize
 }}</label>
       <div class="col-sm-8">
-        <select class="form-control" id="prescription-type">
+        <select class="form-control" id="prescription-type" required>
           <option selected>{{ i18n("labels", "choose") | capitalize }}...</option>
 
           {%- for type in prescriptionTypes %}
@@ -50,15 +50,24 @@
       {{ i18n("labels", "medications") | capitalize }}:
       </div>
     </div>
-    <div id="medication-list" class="form-group form-row">
-      <div class="col">
-        <input type="text" class="form-control" placeholder="{{ i18n("labels", "medication-name") | capitalize }}"
-               name="medication_name">
+    <div id="medication-list">
+      <div class="form-group form-row">
+        <div class="col">
+          <input type="text" class="form-control" placeholder="{{ i18n("labels", "medication-name") | capitalize }}"
+                 name="medication_name">
+          <div class="invalid-feedback">
+          {{ i18n("labels", "please-add-medication") }}
+          </div>
+        </div>
+        <div class="col">
+          <input type="text" class="form-control" placeholder="{{ i18n("labels", "recipe") | capitalize }}"
+                 name="recipe">
+          <div class="invalid-feedback">
+          {{ i18n("labels", "please-add-recipe") }}
+          </div>
+        </div>
+        <button type="button" id="add-medication" class="btn btn-success btn-add">+</button>
       </div>
-      <div class="col">
-        <input type="text" class="form-control" placeholder="{{ i18n("labels", "recipe") | capitalize }}" name="recipe">
-      </div>
-      <button type="button" class="btn btn-secondary">+</button>
     </div>
     <button type="submit" class="btn btn-primary">{{ i18n("labels", "create-prescription") | capitalize }}</button>
   </form>
