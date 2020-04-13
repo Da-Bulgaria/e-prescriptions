@@ -1,29 +1,52 @@
-$(document).ready(function() {
-	let loginDoctor = $("#loginDoctor");
-	let loginPharmacist = $("#loginPharmacist");
-	
-	loginDoctor.on('click', function() {
-		logUser("DOCTOR");
-	});
+const userInputDoctor = $("#userInputDoctor");
+const userInputPharmacist = $("#userInputPharmacist");
 
-	loginPharmacist.on('click', function() {
-		logUser("PHARMACIST");
-	});
+$(document).ready(function () {
+    let loginDoctor = $("#loginDoctor");
+    let loginPharmacist = $("#loginPharmacist");
+
+    loginDoctor.on('click', function (e) {
+        e.preventDefault();
+        checkInputData();
+        logUser("DOCTOR");
+    });
+
+    loginPharmacist.on('click', function (e) {
+        e.preventDefault();
+        checkInputData();
+        logUser("PHARMACIST");
+    });
+
+
+    $(document).keypress(function (event) {
+
+        if (event.keyCode === 13) {
+            event.preventDefault();
+
+            if (userInputDoctor.val().toString().length > 0) {
+                logUser("DOCTOR");
+            } else if (userInputPharmacist.val().toString().length > 0) {
+                logUser("PHARMACIST");
+            } else {
+                checkInputData();
+            }
+        }
+    });
 });
 
 function buildBody(userType) {
     let userInput = "";
     let userPassword;
 
-    if (userType == "DOCTOR") {
-    	let userInputDoctor = $("#userInputDoctor");
-    	let passwordDoctor = $("#passwordDoctor");
+    if (userType === "DOCTOR") {
+        let userInputDoctor = $("#userInputDoctor");
+        let passwordDoctor = $("#passwordDoctor");
         userPassword = passwordDoctor.val();
         userInput = userInputDoctor.val();
-    } else if (userType == "PHARMACIST") {
-    	let userInputPharmacist = $("#userInputPharmacist");
-    	let passwordPharmacist = $("#passwordPharmacist");
-    	
+    } else if (userType === "PHARMACIST") {
+        let userInputPharmacist = $("#userInputPharmacist");
+        let passwordPharmacist = $("#passwordPharmacist");
+
         userPassword = passwordPharmacist.val();
         userInput = userInputPharmacist.val();
     }
@@ -46,7 +69,7 @@ async function logUser(userType) {
             body: buildBody(userType)
         });
 
-        if (response.status == 200) {
+        if (response.status === 200) {
             window.location = "/";
         } else {
             console.log('Login failed.');
@@ -55,7 +78,29 @@ async function logUser(userType) {
             throw error;
         }
     } catch (error) {
-         console.error('Login error.', error);
+        console.error('Login error.', error);
     }
 }
 
+function customErrorAlert() {
+    const close = document.getElementsByClassName("closeErrorWindow")[0];
+    const box = document.getElementById("errorBox");
+
+    box.style.display = "block";
+
+    close.onclick = function () {
+        box.style.display = "none";
+    };
+
+    window.onclick = function (event) {
+        if (event.target === box) {
+            box.style.display = "none";
+        }
+    };
+}
+
+function checkInputData() {
+    if (userInputDoctor.val().toString().length === 0 && userInputPharmacist.val().toString().length === 0) {
+        customErrorAlert();
+    }
+}

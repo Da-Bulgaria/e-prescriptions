@@ -4,6 +4,7 @@
 :root {
     --doctor-color: rgb(168 44 23);
     --pharmacist-color: #336699;
+    --background-color: rgb(236 240 240);
 }
 
 *, *:before, *:after {
@@ -20,7 +21,7 @@ body, form, select, input, textarea, option, legend {
 html {
     box-sizing: border-box;
     font: 16px/1.2 "Source Sans Pro", sans-serif;
-    background: rgb(236 240 240);
+    background: var(--background-color);
 }
 
 body {
@@ -46,12 +47,12 @@ form {
     border-bottom: 2px solid var(--pharmacist-color);
 }
 
-
 .submit-button, .submit-button-pharmacist {
     display: block;
     width: 100%;
     padding: 0.4em;
     background: var(--doctor-color);
+    border: var(--doctor-color) 2px solid ;
     color: #FFFFFF;
     font-size: 1.5em;
     text-align: center;
@@ -59,10 +60,18 @@ form {
     border-radius: 0.4rem;
     margin: 1rem auto 2rem auto;
     cursor: pointer;
+    transition: background 0.2s ease-in-out;
 }
 
-.submit-button-pharmacist{
+.submit-button-pharmacist {
     background: var(--pharmacist-color);
+    border: var(--pharmacist-color) 2px solid ;
+}
+
+.submit-button:hover,
+.submit-button-pharmacist:hover {
+    color: #666;
+    background: white;
 }
 
 div.row-form {
@@ -76,12 +85,8 @@ label {
     color: #666;
 }
 
-form div {
-    text-align: left;
-    position: relative;
-}
-
-input, .input-doctor, .input-pharmacist{
+.input-doctor,
+.input-pharmacist {
     width: 100%;
     border-radius: 0.4rem;
     border: solid 1px var(--doctor-color);
@@ -90,12 +95,66 @@ input, .input-doctor, .input-pharmacist{
     outline: none;
 }
 
-input, .input-pharmacist{
+.input-pharmacist {
     border: solid 1px var(--pharmacist-color);
 }
 
-.register-form{
+.register-form {
     width: 80%;
+}
+
+.checkbox-wrapper > label {
+    margin-left: 0.3rem;
+}
+
+label {
+    display: inline-block;
+}
+
+[type=checkbox] {
+    display: inline;
+    position: relative;
+    top: -1px;
+    overflow: hidden;
+}
+
+#errorBox {
+    background: red;
+    padding: 2rem;
+    text-align: center;
+    font-size: 1.5rem;
+    border-radius: 0.5rem;
+    margin: 1rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -40%);
+    z-index: 1;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.notification{
+    align-content: center;
+    display: none;
+}
+
+.closeErrorWindow {
+    color: black;
+    background: #D2E0E6;
+    border-radius: 0.5rem;
+    border: black 1px solid;
+    padding: 0.2rem 1rem;
+    margin-top: 0.8rem;
+    display: inline-block;
+    align-content: center;
+    font-size: 1.5rem;
+}
+
+.closeErrorWindow:hover,
+.closeErrorWindow:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 @media only screen and (min-width: 768px) {
