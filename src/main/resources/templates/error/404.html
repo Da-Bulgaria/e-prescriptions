@@ -1,0 +1,14 @@
+{% extends "main-layout" %}
+
+{% block title %}{{ i18n("labels", "errors.not-found") | capitalize }}{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h1>{{ i18n("labels", "errors.not-found") | capitalize }}</h1>
+    </div>
+  </div>
+</div>
+{% endblock %}
