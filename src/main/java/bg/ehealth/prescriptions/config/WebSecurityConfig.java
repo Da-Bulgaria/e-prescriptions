@@ -65,7 +65,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/login").permitAll()
             .antMatchers("/error").permitAll()
             .antMatchers("/webjars/**", "/api", "/api/", "/api-docs/**", SWAGGER_RESOURCES_URL + "**").permitAll()
-            .antMatchers("/css/**", "/js/**", "/assets/**", "/images/**", "/favicon.ico", "/.well-known/**").permitAll()
+            .antMatchers("/assets/**", "/favicon.ico", "/.well-known/**").permitAll()
             .antMatchers("/**").authenticated()
             .antMatchers("/adminpanel/**").authenticated()
             .and()
@@ -79,9 +79,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .addFilterBefore(new JWTAuthenticationFilter(
                 Arrays.asList(APP_USER_URL, SWAGGER_RESOURCES_URL, "/error"), jwtSecret, userService), 
                     UsernamePasswordAuthenticationFilter.class)
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // TODO consider stateless?
-            .and().headers().contentSecurityPolicy((secureHeaders ? "upgrade-insecure-requests; " : "")
-                + "script-src 'self' 'unsafe-inline' https://www.google-analytics.com/" + "; report-uri " + reportUriCsp)
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and().headers().contentSecurityPolicy((secureHeaders ? "upgrade-insecure-requests; " : "") +
+                "script-src 'self' 'unsafe-inline' https://code.jquery.com/ https://cdn.jsdelivr.net/ " +
+                "https://stackpath.bootstrapcdn.com/; report" + "-uri " + reportUriCsp)
             .and().referrerPolicy(ReferrerPolicyHeaderWriter.ReferrerPolicy.NO_REFERRER)
             .and().xssProtection().disable()
             .addHeaderWriter(new StaticHeadersWriter("X-Xss-Protection", "1; mode=block; report=" + reportUriXss))

@@ -13,11 +13,12 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jjwt.version>0.7.0</jjwt.version>
+		<jjwt.version>0.11.1</jjwt.version>
 		<springfox-swagger.version>2.9.2</springfox-swagger.version>
 		<apache.poi.version>3.15</apache.poi.version>
 		<pebble.version>3.0.9</pebble.version>
 		<commons-text.version>1.1</commons-text.version>
+		<commons-csv.version>1.8</commons-csv.version>
 		<throwing-lambdas.version>0.5.0</throwing-lambdas.version>
 		<mail.version>1.4.7</mail.version>
 		<commons-io.version>2.5</commons-io.version>
@@ -37,6 +38,7 @@
 		<maven-pmd-plugin.version>3.9.0</maven-pmd-plugin.version>
 		<jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
 		<gatling-maven-plugin.version>3.0.5</gatling-maven-plugin.version>
+		<lucene.version>8.5.0</lucene.version>
 	</properties>
 
 	<repositories>
@@ -131,10 +133,22 @@
 			<artifactId>aspectjweaver</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt</artifactId>
-			<version>${jjwt.version}</version>
-		</dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jjwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jjwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>webjars-locator-core</artifactId>
@@ -301,6 +315,11 @@
 			<artifactId>commons-text</artifactId>
 			<version>${commons-text.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-csv</artifactId>
+			<version>${commons-csv.version}</version>
+		</dependency>
 
 		<!-- SWAGGER -->
 		<dependency>
@@ -318,6 +337,28 @@
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>${springfox-swagger.version}</version>
+		</dependency>
+
+		<!-- Lucene -->
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<version>${lucene.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-analyzers-common</artifactId>
+			<version>${lucene.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-queryparser</artifactId>
+			<version>${lucene.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-suggest</artifactId>
+			<version>${lucene.version}</version>
 		</dependency>
 
 		<!-- TEST -->

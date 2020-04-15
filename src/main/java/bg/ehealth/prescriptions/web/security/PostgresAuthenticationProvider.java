@@ -2,6 +2,10 @@ package bg.ehealth.prescriptions.web.security;
 
 import java.util.Collections;
 
+import bg.ehealth.prescriptions.persistence.DoctorRepository;
+import bg.ehealth.prescriptions.persistence.model.enums.UserType;
+import bg.ehealth.prescriptions.services.UserService;
+import org.apache.xmlbeans.impl.xb.xsdschema.Attribute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,7 +28,7 @@ import bg.ehealth.prescriptions.persistence.model.User;
 public class PostgresAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
     @Autowired
-    private PharmacistRepository userRepository;
+    private UserService userService;
 
     @Autowired
     private GoogleAuthenticator googleAuthenticator;
@@ -47,7 +51,8 @@ public class PostgresAuthenticationProvider extends AbstractUserDetailsAuthentic
         }
         LoginAuthenticationToken loginToken = (LoginAuthenticationToken) authentication;
 
-        User user = userRepository.getOne(loginToken.getUser().getId());
+        User user = userService.getUserByUin(loginToken.getUser().getUin(), loginToken.getUser().getUserType());
+
         if (user.getTwoFactorAuthSecret() != null
                 && !googleAuthenticator.authorize(user.getTwoFactorAuthSecret(), loginToken.getVerificationCode())) {
             throw new BadCredentialsException("Missing two-factor authentication verification code");

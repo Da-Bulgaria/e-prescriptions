@@ -4,6 +4,7 @@ import bg.ehealth.prescriptions.persistence.model.User;
 import bg.ehealth.prescriptions.persistence.model.enums.UserType;
 import bg.ehealth.prescriptions.services.UserService;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import io.undertow.server.handlers.Cookie;
 import io.undertow.server.handlers.CookieImpl;
 import io.undertow.servlet.spec.HttpServletResponseImpl;
@@ -19,7 +20,6 @@ import javax.servlet.http.HttpServletResponseWrapper;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,7 +31,7 @@ public class TokenAuthenticationService {
 
     private static final String USER_TYPE_CLAIM = "userType";
     private static final Logger logger = LoggerFactory.getLogger(TokenAuthenticationService.class);
-    private static final String ACCESS_TOKEN_COOKIE_NAME = "access_token_trails";
+    private static final String ACCESS_TOKEN_COOKIE_NAME = "access_token";
     private static final Duration EXPIRATION_TIME = Duration.ofDays(5);
     private static final String TOKEN_PREFIX = "Bearer";
     public static final String HASH_CLAIM = "hash";
@@ -72,8 +72,8 @@ public class TokenAuthenticationService {
                 .claim(HASH_CLAIM, hashClaim)
                 .claim(USER_TYPE_CLAIM, userType)
                 .setSubject(userId)
-                .setExpiration(Date.from(Instant.now().plusMillis(EXPIRATION_TIME.get(ChronoUnit.MILLIS))))
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .setExpiration(Date.from(Instant.now().plusMillis(EXPIRATION_TIME.toMillis())))
+                .signWith(Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret)), SignatureAlgorithm.HS512)
                 .compact();
     }
 
@@ -90,11 +90,15 @@ public class TokenAuthenticationService {
 
     static LoginAuthenticationToken getAuthentication(HttpServletRequest request, HttpServletResponse response,
                                                       String secret, UserService userService) {
-        String token = Arrays.stream(request.getCookies())
-                .filter(cookie -> cookie.getName().endsWith(ACCESS_TOKEN_COOKIE_NAME))
-                .findFirst()
-                .map(javax.servlet.http.Cookie::getValue)
-                .orElse(null);
+        String token = null;
+
+        if (request.getCookies() != null) {
+            token = Arrays.stream(request.getCookies())
+                    .filter(cookie -> cookie.getName().endsWith(ACCESS_TOKEN_COOKIE_NAME))
+                    .findFirst()
+                    .map(javax.servlet.http.Cookie::getValue)
+                    .orElse(null);
+        }
 
         // if it's not found in a cookie, look in the Authorization header instead 
         if (StringUtils.isBlank(token)) {
@@ -126,8 +130,9 @@ public class TokenAuthenticationService {
             String secret, String token, UserService userService) {
 
         // parse the token
-        Jws<Claims> jwt = Jwts.parser()
-                .setSigningKey(secret)
+        Jws<Claims> jwt = Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret)))
+                .build()
                 .parseClaimsJws(token);
 
         // verify algorithm
@@ -137,7 +142,7 @@ public class TokenAuthenticationService {
         }
 
         String userUin = jwt.getBody().getSubject();
-        UserType userType = jwt.getBody().get(USER_TYPE_CLAIM, UserType.class);
+        UserType userType = UserType.valueOf(jwt.getBody().get(USER_TYPE_CLAIM, String.class));
         
         if (userUin == null) {
             return null;
