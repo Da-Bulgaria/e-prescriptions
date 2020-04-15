@@ -17,9 +17,9 @@ public class MedicineServiceJob {
     }
 
     @Scheduled(cron = "${medicine.registry.import.schedule:0 0 0 * * SUN}")
-    public void start() {
+    public void importMedicines() {
         LOGGER.info("Starting cron job: import medicines registry.");
-        service.importMedicines();
+        service.saveAll(service.seedMedicines());
         LOGGER.info("Cron job finished.");
     }
 }

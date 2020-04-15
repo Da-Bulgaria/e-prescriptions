@@ -16,6 +16,5 @@ public class Pharmacist extends User {
     public void setPharmacyId(UUID pharmacyId) {
         this.pharmacyId = pharmacyId;
     }
-    
-    
+
 }

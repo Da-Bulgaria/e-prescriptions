@@ -1,10 +1,10 @@
-package bg.ehealth.prescriptions.services.pharmacy;
+package bg.ehealth.prescriptions.services.pharmacy.excel;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public enum PharmacyRegistryExcelColumn {
+public enum PharmacyExcelColumn {
     IDENTIFIER("№/№-промяна"),
     NAME("Име на фирма"),
     ADDRESS_CITY("Адрес на аптека - град"),
@@ -12,7 +12,7 @@ public enum PharmacyRegistryExcelColumn {
     NULL("null")
     ;
 
-    public static PharmacyRegistryExcelColumn fromString(String key) {
+    public static PharmacyExcelColumn fromString(String key) {
         return Arrays.stream(values())
                 .filter(excelColumn -> excelColumn.getLocalizedName().equals(key.trim()))
                 .findFirst()
@@ -22,13 +22,13 @@ public enum PharmacyRegistryExcelColumn {
     public static List<String> valuesAsString() {
         return Arrays.stream(values())
                 .filter(column -> column != NULL)
-                .map(PharmacyRegistryExcelColumn::getLocalizedName)
+                .map(PharmacyExcelColumn::getLocalizedName)
                 .collect(Collectors.toList());
     }
 
     private final String localizedName;
 
-    PharmacyRegistryExcelColumn(String localizedName) {
+    PharmacyExcelColumn(String localizedName) {
         this.localizedName = localizedName;
     }
 

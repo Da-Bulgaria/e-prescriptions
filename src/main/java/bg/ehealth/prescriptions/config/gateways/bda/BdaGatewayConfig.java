@@ -1,4 +1,4 @@
-package bg.ehealth.prescriptions.config.gateways;
+package bg.ehealth.prescriptions.config.gateways.bda;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;

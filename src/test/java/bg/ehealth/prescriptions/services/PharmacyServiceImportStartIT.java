@@ -1,6 +1,7 @@
 package bg.ehealth.prescriptions.services;
 
 import bg.ehealth.prescriptions.services.pharmacy.PharmacyService;
+import bg.ehealth.prescriptions.services.pharmacy.PharmacyServiceJob;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class PharmacyServiceImportStartIT {
 
     @Autowired
-    private PharmacyService service;
+    private PharmacyServiceJob service;
 
     @Test
     public void importPharmacyRegistry() {

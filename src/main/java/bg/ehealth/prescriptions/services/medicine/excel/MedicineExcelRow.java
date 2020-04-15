@@ -1,31 +1,23 @@
-package bg.ehealth.prescriptions.services.medicine;
+package bg.ehealth.prescriptions.services.medicine.excel;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
-@Valid
-public class MedicineRegistryExcelRow {
+public class MedicineExcelRow {
 
-    @NotBlank
     private final String id; //"Идентификатор на ЛП"
-    @NotBlank
     private final String atcCode; // "Анатомо-терапевтичен код /АТС-код/"
-    @NotBlank
     private final String inn; // "Международно непатентно наименование /INN/"
-    @NotBlank
     private final String name; // "Наименование на лекарствения продукт"
-    @NotBlank
     private final String icdCode; // "МКБ"
-    @NotBlank
     private final String medicineStatus; // "Статус"
 
-    public MedicineRegistryExcelRow(@NotBlank String id,
-                                    @NotBlank String atcCode,
-                                    @NotBlank String inn,
-                                    @NotBlank String name,
-                                    @NotBlank String icdCode,
-                                    @NotBlank String medicineStatus) {
+    public MedicineExcelRow(@NotBlank String id,
+                            @NotBlank String atcCode,
+                            @NotBlank String inn,
+                            @NotBlank String name,
+                            @NotBlank String icdCode,
+                            @NotBlank String medicineStatus) {
         this.id = id;
         this.atcCode = atcCode;
         this.inn = inn;
@@ -62,7 +54,7 @@ public class MedicineRegistryExcelRow {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MedicineRegistryExcelRow that = (MedicineRegistryExcelRow) o;
+        MedicineExcelRow that = (MedicineExcelRow) o;
         return id.equals(that.id) &&
                 atcCode.equals(that.atcCode);
     }

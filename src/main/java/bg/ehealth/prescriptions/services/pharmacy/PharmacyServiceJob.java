@@ -17,9 +17,9 @@ public class PharmacyServiceJob {
     }
 
     @Scheduled(cron = "${pharmacy.registry.import.schedule:0 0 0 * * SUN}")
-    public void start() {
+    public void importPharmacies() {
         LOGGER.info("Starting cron job: import pharmacy registry.");
-        service.importPharmacies();
+        service.saveAll(service.seedPharmacies());
         LOGGER.info("Cron job finished.");
     }
 }

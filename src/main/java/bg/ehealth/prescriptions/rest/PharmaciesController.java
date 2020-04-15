@@ -2,7 +2,6 @@ package bg.ehealth.prescriptions.rest;
 
 import bg.ehealth.prescriptions.persistence.model.PharmacyView;
 import bg.ehealth.prescriptions.services.pharmacy.PharmacyService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,8 +17,8 @@ public class PharmaciesController {
     }
 
     @GetMapping("/pharmacies")
-    public List<PharmacyView> аllPharmacies() {
-        return service.allPharmacies();
+    public List<PharmacyView> allPharmacies() {
+        return service.pharmacies();
     }
 }
 

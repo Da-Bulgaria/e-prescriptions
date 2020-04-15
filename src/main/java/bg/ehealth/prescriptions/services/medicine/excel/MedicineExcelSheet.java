@@ -1,4 +1,4 @@
-package bg.ehealth.prescriptions.services.medicine;
+package bg.ehealth.prescriptions.services.medicine.excel;
 
 import com.google.common.base.Strings;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -20,43 +20,41 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static bg.ehealth.prescriptions.services.medicine.MedicineRegistryExcelColumn.*;
+import static bg.ehealth.prescriptions.services.medicine.excel.MedicineExcelColumn.*;
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.poi.ss.usermodel.FillPatternType.SOLID_FOREGROUND;
 import static org.apache.poi.ss.util.CellUtil.getCell;
 
 @Service
-public class MedicineRegistry {
+public class MedicineExcelSheet {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MedicineRegistry.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MedicineExcelSheet.class);
 
-    public @NotNull List<MedicineRegistryExcelRow> medicines(@NotNull List<InputStream> inputStream, List<String> columnNames) {
+    private int rowIndex;
+
+    public @NotNull List<MedicineExcelRow> medicines(@NotNull List<InputStream> inputStream,
+                                                     @NotNull List<String> columnNames,
+                                                     int rowNumberScan) {
         checkArgument(inputStream != null, "Cannot read medicines: inputStream cannot be null!");
         LOGGER.debug("Parsing input stream for column names:{}", columnNames);
-        List<MedicineRegistryExcelRow> rows = new ArrayList<>();
-        inputStream.forEach(input -> rows.addAll(medicines(columnNames, input)));
+        List<MedicineExcelRow> rows = new ArrayList<>();
+        inputStream.forEach(input -> rows.addAll(medicines(columnNames, input, rowNumberScan)));
         LOGGER.debug("Parsed {} rows.", rows.size());
         return rows;
     }
 
-    private List<MedicineRegistryExcelRow> medicines(List<String> columnNames, InputStream input) {
+    private List<MedicineExcelRow> medicines(List<String> columnNames, InputStream input, int rowNumberScan) {
         Sheet sheet = sheet(input, 0);
-        Map<MedicineRegistryExcelColumn, Integer> columns = columns(sheet, columnNames);
+        Map<MedicineExcelColumn, Integer> columns = columns(sheet, columnNames, rowNumberScan);
         return medicineExcelRows(sheet, columns);
     }
 
     //TODO better add skipping to the header row directly
-    private List<MedicineRegistryExcelRow> medicineExcelRows(Sheet sheet,
-                                                             Map<MedicineRegistryExcelColumn, Integer> columns) {
+    private List<MedicineExcelRow> medicineExcelRows(Sheet sheet,
+                                                     Map<MedicineExcelColumn, Integer> columns) {
         return StreamSupport.stream(sheet.spliterator(), false)
-                .filter(row -> row.getFirstCellNum() >= 0)
-                .filter(row -> {
-                    short firstCellNum = row.getFirstCellNum();
-                    Cell cell = row.getCell(firstCellNum);
-                    return !SOLID_FOREGROUND.equals(cell.getCellStyle().getFillPatternEnum());
-                })
-                .filter(row -> !(row.getPhysicalNumberOfCells() < sheet.getNumMergedRegions()))
-                .map(row -> new MedicineRegistryExcelRow(
+                .skip(rowIndex)
+                .map(row -> new MedicineExcelRow(
                         cellStringValue(getCell(row, columns.get(IDENTIFIER))),
                         cellStringValue(getCell(row, columns.get(ATC_CODE))),
                         cellStringValue(getCell(row, columns.get(INN))),
@@ -77,13 +75,8 @@ public class MedicineRegistry {
                 sheetNumber + " from excel").getSheetAt(sheetNumber);
     }
 
-    private Map<MedicineRegistryExcelColumn, Integer> columns(Sheet sheet, List<String> columnNames) {
-        int numberOfRows = 15;
-        int rowIndex = forwardScanForColumnHeaders(sheet, columnNames, numberOfRows);
-        if (rowIndex < 0) {
-            throw new RuntimeException("Unable to find columns with column names: " + columnNames
-                    + " in the first " + numberOfRows + " rows");
-        }
+    private Map<MedicineExcelColumn, Integer> columns(Sheet sheet, List<String> columnNames, int rowNumberScan) {
+        rowIndex = forwardScanForColumnHeaders(sheet, columnNames, rowNumberScan);
         LOGGER.debug("Column headers located at row: {}", rowIndex);
         return StreamSupport.stream(sheet.getRow(rowIndex).spliterator(), false)
                 .filter(cell -> SOLID_FOREGROUND.equals(cell.getCellStyle().getFillPatternEnum()))

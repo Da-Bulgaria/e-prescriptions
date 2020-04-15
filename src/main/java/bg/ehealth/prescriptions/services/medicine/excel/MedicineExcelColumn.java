@@ -1,10 +1,10 @@
-package bg.ehealth.prescriptions.services.medicine;
+package bg.ehealth.prescriptions.services.medicine.excel;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public enum MedicineRegistryExcelColumn {
+public enum MedicineExcelColumn {
     ATC_CODE("Анатомо-терапевтичен код /АТС-код/"),
     INN("Международно непатентно наименование /INN/"),
     NAME("Наименование на лекарствения продукт"),
@@ -14,7 +14,7 @@ public enum MedicineRegistryExcelColumn {
     NULL("null")
     ;
 
-    public static MedicineRegistryExcelColumn fromString(String key) {
+    public static MedicineExcelColumn fromString(String key) {
         return Arrays.stream(values())
                 .filter(excelColumn -> excelColumn.getLocalizedName().equals(key.trim()))
                 .findFirst()
@@ -24,13 +24,13 @@ public enum MedicineRegistryExcelColumn {
     public static List<String> valuesAsString() {
         return Arrays.stream(values())
                 .filter(column -> column != NULL)
-                .map(MedicineRegistryExcelColumn::getLocalizedName)
+                .map(MedicineExcelColumn::getLocalizedName)
                 .collect(Collectors.toList());
     }
 
     private final String localizedName;
 
-    MedicineRegistryExcelColumn(String localizedName) {
+    MedicineExcelColumn(String localizedName) {
         this.localizedName = localizedName;
     }
 
