@@ -1,7 +1,5 @@
-package bg.ehealth.prescriptions.services;
+package bg.ehealth.prescriptions.services.medicine.nonproprietary;
 
-import bg.ehealth.prescriptions.services.pharmacy.PharmacyService;
-import bg.ehealth.prescriptions.services.pharmacy.PharmacyServiceJob;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +10,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("postgresql")
-public class PharmacyServiceImportStartIT {
+public class NonProprietaryMedicineServiceImportStartIT {
 
     @Autowired
-    private PharmacyServiceJob service;
+    private NonProprietaryMedicineNamesServiceJob service;
 
     @Test
-    public void importPharmacyRegistry() {
-        service.importPharmacies();
+    public void importNonProprietaryMedicineNames() {
+        service.importMedicineNames();
     }
 }

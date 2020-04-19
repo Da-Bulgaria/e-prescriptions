@@ -7,7 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
-import bg.ehealth.prescriptions.persistence.model.enums.MedicineStatus;
+import bg.ehealth.prescriptions.persistence.model.enums.MedicinePrescriptionStatus;
 
 @Entity
 public class PrescriptionEntry implements Identifiable<PrescriptionEntryId> {
@@ -16,7 +16,7 @@ public class PrescriptionEntry implements Identifiable<PrescriptionEntryId> {
     private PrescriptionEntryId id;
     
     @Column
-    private MedicineStatus status;
+    private MedicinePrescriptionStatus status;
     
     @Column
     private int timesPerDay;
@@ -42,11 +42,11 @@ public class PrescriptionEntry implements Identifiable<PrescriptionEntryId> {
         this.id = id;
     }
     
-    public MedicineStatus getStatus() {
+    public MedicinePrescriptionStatus getStatus() {
         return status;
     }
 
-    public void setStatus(MedicineStatus status) {
+    public void setStatus(MedicinePrescriptionStatus status) {
         this.status = status;
     }
 }

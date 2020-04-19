@@ -1,4 +1,4 @@
-package bg.ehealth.prescriptions.services.pharmacy;
+package bg.ehealth.prescriptions.services.pharmacy.excel;
 
 import com.google.common.base.Strings;
 
@@ -6,21 +6,23 @@ import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
-@Valid
-public class PharmacyRegistryExcelRow {
+public class PharmacyExcelRow {
 
-    @NotBlank
-    private final String identifier;
-    @Nullable
-    private final String name;
-    @NotBlank
-    private final String city;
-    @NotBlank
-    private final String address;
+    private final String identifier; // "№/№-промяна"
+    private final String name; // "Име на фирма"
+    private final String city; // "Адрес на аптека - град"
+    private final String address; // "Адрес на аптека"
 
-    public PharmacyRegistryExcelRow(String identifier, String name, String city, String address) {
+    public PharmacyExcelRow(@NotBlank String identifier,
+                            @Nullable String name,
+                            @NotBlank String city,
+                            @NotBlank String address) {
         this.identifier = identifier.trim();
-        this.name = name.trim();
+        if (name == null) {
+            this.name = null;
+        } else {
+            this.name = name.trim();
+        }
         this.city = city.trim();
         this.address = address.trim();
     }

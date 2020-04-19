@@ -1,6 +1,6 @@
-package bg.ehealth.prescriptions.gateways;
+package bg.ehealth.prescriptions.gateways.bda;
 
-import bg.ehealth.prescriptions.config.gateways.BdaGatewayProperties;
+import bg.ehealth.prescriptions.config.gateways.bda.BdaGatewayProperties;
 import bg.ehealth.prescriptions.stereotype.Gateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +19,12 @@ public class BdaGateway {
     private final WebTarget pharmacyRegistry;
 
     public BdaGateway(Client bdaClient, BdaGatewayProperties properties) {
-        this.pharmacyRegistry = bdaClient.target(UriComponentsBuilder
-                        .fromHttpUrl(properties.getHost())
-                        .path(properties.getRegistersUrl())
-                        .path(properties.getRegisterPharmacies())
-                        .toUriString());
+        String uri = UriComponentsBuilder
+                .fromHttpUrl(properties.getHost())
+                .path(properties.getRegistersUrl())
+                .path(properties.getRegisterPharmacies())
+                .toUriString();
+        this.pharmacyRegistry = bdaClient.target(uri);
     }
 
     public InputStream pharmacyRegistry() {

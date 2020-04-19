@@ -1,7 +1,7 @@
 package bg.ehealth.prescriptions.services;
 
-import bg.ehealth.prescriptions.services.pharmacy.PharmacyService;
-import bg.ehealth.prescriptions.services.pharmacy.PharmacyServiceJob;
+import bg.ehealth.prescriptions.services.medicine.MedicineService;
+import bg.ehealth.prescriptions.services.medicine.MedicineServiceJob;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +12,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("postgresql")
-public class PharmacyServiceImportStartIT {
+public class MedicineServiceImportStartIT {
 
     @Autowired
-    private PharmacyServiceJob service;
+    private MedicineServiceJob service;
 
     @Test
-    public void importPharmacyRegistry() {
-        service.importPharmacies();
+    public void importMedicineRegistry() {
+        service.importMedicines();
     }
 }
