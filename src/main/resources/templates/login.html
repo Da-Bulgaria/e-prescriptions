@@ -1,5 +1,9 @@
 {% extends "main-layout" %}
 
+{% block scripts %}
+<script type="text/javascript" src="/assets/js/login.js"></script>
+{% endblock %}
+
 {% block title %}{{ i18n("labels", "login") | capitalize }}{% endblock %}
 
 {% block content %}
@@ -79,8 +83,4 @@
     </div>
 </div>
 
-{% endblock %}
-
-{% block scripts %}
-<script type="text/javascript" src="/assets/js/login.js"></script>
 {% endblock %}

@@ -1,30 +1,30 @@
 package bg.ehealth.prescriptions.web;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletResponse;
-
+import bg.ehealth.prescriptions.persistence.model.enums.PrescriptionType;
+import bg.ehealth.prescriptions.persistence.model.enums.UserType;
+import bg.ehealth.prescriptions.web.security.LoginAuthenticationToken;
+import com.mitchellbosecke.pebble.PebbleEngine;
+import com.mitchellbosecke.pebble.error.PebbleException;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.mitchellbosecke.pebble.PebbleEngine;
-import com.mitchellbosecke.pebble.error.PebbleException;
-
-import bg.ehealth.prescriptions.persistence.model.enums.UserType;
-import bg.ehealth.prescriptions.web.security.LoginAuthenticationToken;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @Controller
 public class AppController {
@@ -45,7 +45,18 @@ public class AppController {
         }
         throw new IllegalStateException("Unsupported user type " + token.getUser().getUserType());
     }
-    
+
+    @GetMapping("/prescription")
+    public ModelAndView prescription(@AuthenticationPrincipal LoginAuthenticationToken token) {
+        ModelAndView mav = new ModelAndView("prescription");
+
+        mav.addAllObjects(Map.of(
+                "prescriptionTypes", PrescriptionType.values()
+        ));
+
+        return mav;
+    }
+
     @RequestMapping(value = "/{path}", method = RequestMethod.GET)
     public ModelAndView htmlMapping(@PathVariable String path,
                                     @AuthenticationPrincipal LoginAuthenticationToken token,
